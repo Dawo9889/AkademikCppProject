@@ -11,10 +11,10 @@ int main(int argc, char** argv)
     string nazwaTabeliPokoj = "Pokoje";
 
     Pokoj pokoj(nazwaTabeliPokoj);
-    pokoj.createTablePokoj();
+    //pokoj.createTablePokoj(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
     Mieszkaniec mieszkaniec(nazwaTabeliMieszkancy);
-    mieszkaniec.createTableMieszkaniec();
+    //mieszkaniec.createTableMieszkaniec(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
    
 

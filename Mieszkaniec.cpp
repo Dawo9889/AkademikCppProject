@@ -24,7 +24,7 @@ int Mieszkaniec::createTableMieszkaniec()
 		"nr_pokoju VARCHAR(4),"
 		"FOREIGN KEY (nr_pokoju) REFERENCES pokoj(nr_pokoju)"
 		");";
-
+	
 	result = sqlite3_exec(db, createTableSQL.c_str(), nullptr, nullptr, &err);
 	if (result != SQLITE_OK) {
 		cout << "Blad aplikacji: " << err << endl;
