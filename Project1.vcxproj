@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Mieszkaniec.cpp" />
     <ClCompile Include="Pokoj.cpp" />
     <ClCompile Include="sqlite\sqlite3.c" />
@@ -135,6 +136,7 @@
     <ClCompile Include="sqlite\shell.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Interface.h" />
     <ClInclude Include="Mieszkaniec.h" />
     <ClInclude Include="Pokoj.h" />
   </ItemGroup>

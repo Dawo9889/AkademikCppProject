@@ -3,6 +3,7 @@
 #include <string>
 #include "Mieszkaniec.h";
 #include "Pokoj.h";
+#include "Interface.h"
 using namespace std;
 
 int main(int argc, char** argv)
@@ -16,7 +17,9 @@ int main(int argc, char** argv)
     Mieszkaniec mieszkaniec(nazwaTabeliMieszkancy);
     //mieszkaniec.createTableMieszkaniec(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
-   
+    Interface i1;
+
+    i1.welcomePage();
 
     
 }
