@@ -20,6 +20,7 @@ int main(int argc, char** argv)
     Interface i1;
 
     i1.welcomePage();
+    i1.pageWhenUCanLoginOrRegisterOrExit();
 
     
 }

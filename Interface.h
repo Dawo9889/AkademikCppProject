@@ -6,4 +6,5 @@ class Interface
 {
 public:
 	void welcomePage();
+	void pageWhenUCanLoginOrRegisterOrExit();
 };
