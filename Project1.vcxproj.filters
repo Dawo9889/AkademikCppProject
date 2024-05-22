@@ -24,10 +24,10 @@
     <ClCompile Include="sqlite\sqlite3.c">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Mieszkaniec.cpp">
+    <ClCompile Include="Resident.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Pokoj.cpp">
+    <ClCompile Include="Room.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="Interface.cpp">
@@ -35,10 +35,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mieszkaniec.h">
+    <ClInclude Include="Resident.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Pokoj.h">
+    <ClInclude Include="Room.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Interface.h">

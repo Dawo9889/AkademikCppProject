@@ -1,21 +1,21 @@
 #include <iostream>
 #include "sqlite/sqlite3.h"
 #include <string>
-#include "Mieszkaniec.h";
-#include "Pokoj.h";
+#include "Resident.h";
+#include "Room.h";
 #include "Interface.h"
 using namespace std;
 
 int main(int argc, char** argv)
 {
-    string nazwaTabeliMieszkancy = "Mieszkancy";
-    string nazwaTabeliPokoj = "Pokoje";
+    string tableNameResident = "Residents";
+    string tableNameRooms = "Rooms";
 
-    Pokoj pokoj(nazwaTabeliPokoj);
-    //pokoj.createTablePokoj(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
+    Room room(tableNameRooms);
+    room.createTableRoom(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
-    Mieszkaniec mieszkaniec(nazwaTabeliMieszkancy);
-    //mieszkaniec.createTableMieszkaniec(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
+    Resident resident(tableNameResident);
+    resident.createTableResident(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
     Interface i1;
 

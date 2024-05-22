@@ -1,9 +1,9 @@
-#include "Mieszkaniec.h"
-Mieszkaniec::Mieszkaniec(string& name) {
+#include "Resident.h"
+Resident::Resident(string& name) {
 	this->tableName = name;
 }
 
-int Mieszkaniec::createTableMieszkaniec()
+int Resident::createTableResident()
 {
 	sqlite3* db;
 	char* err = nullptr;
@@ -17,12 +17,12 @@ int Mieszkaniec::createTableMieszkaniec()
 	}
 
 	string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "("
-		"PESEL VARCHAR(11) PRIMARY KEY,"
-		"Imie VARCHAR(30) NOT NULL,"
-		"Nazwisko VARCHAR(30) NOT NULL,"
-		"Email VARCHAR(40) NOT NULL,"
-		"nr_pokoju VARCHAR(4),"
-		"FOREIGN KEY (nr_pokoju) REFERENCES pokoj(nr_pokoju)"
+		"pesel VARCHAR(11) PRIMARY KEY,"
+		"first_name VARCHAR(30) NOT NULL,"
+		"last_name VARCHAR(30) NOT NULL,"
+		"email VARCHAR(40) NOT NULL,"
+		"room_number VARCHAR(4),"
+		"FOREIGN KEY (room_number) REFERENCES Room(room_number)"
 		");";
 	
 	result = sqlite3_exec(db, createTableSQL.c_str(), nullptr, nullptr, &err);

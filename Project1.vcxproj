@@ -129,16 +129,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Interface.cpp" />
-    <ClCompile Include="Mieszkaniec.cpp" />
-    <ClCompile Include="Pokoj.cpp" />
+    <ClCompile Include="Resident.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="sqlite\sqlite3.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sqlite\shell.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interface.h" />
-    <ClInclude Include="Mieszkaniec.h" />
-    <ClInclude Include="Pokoj.h" />
+    <ClInclude Include="Resident.h" />
+    <ClInclude Include="Room.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
