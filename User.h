@@ -3,12 +3,12 @@
 #include "sqlite/sqlite3.h"
 #include <string>
 using namespace std;
-class Room // klasa obslugujaca zapytania do tabeli room
+class User // Klasa obslugujaca zapytania do tebeli user
 {
 private:
 	string tableName{};
 public:
-	int createTableRoom();
-	Room(string& name);
+	int createTableUser();
+	User(string& name);
 };
 
