@@ -27,11 +27,11 @@ int main(int argc, char** argv)
 			decision = i1.pageWhenUCanLoginOrRegisterOrExit(); //ekran wyboru: 1 - logowanie, 2 - rejestracja, 3 - wyjscie
 			if (decision == 1)
 			{
-				cout << "logowanie";
+				i1.loginPage();
 			}
 			else if (decision == 2)
 			{
-				cout << "rejestracja";
+				i1.registerPage();
 			}
 			else
 			{
