@@ -9,4 +9,6 @@ public:
 	int pageWhenUCanLoginOrRegisterOrExit();
 	int loginPage();
 	int registerPage();
+	int addRoomToStudentHouse();
+	int addResident();
 };

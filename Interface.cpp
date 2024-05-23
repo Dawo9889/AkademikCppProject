@@ -87,7 +87,6 @@ int Interface::loginPage()
 int Interface::registerPage()
 {
 	string login, password,passwordConfirm, role;
-	bool passwordChecker = true;
 	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
 	cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
 	cout << "[Podaj login: ";
@@ -96,7 +95,7 @@ int Interface::registerPage()
 	{
 		return 0;
 	}
-	while (passwordChecker) {
+	while (true) {
 		cout << "[Podaj haslo: ";
 		password = getPassword();
 		cout << "[Powtorz haslo: ";
@@ -110,3 +109,80 @@ int Interface::registerPage()
 		}
 	}
 }
+int Interface::addRoomToStudentHouse()
+{
+	int roomNumber, numberOfBeds;
+	bool isAvailable = true;
+
+	while (true)
+	{
+		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu -1 + ENTER]" << endl;
+		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
+		cout << "[Wpisz login: ";
+		cin >> roomNumber;
+		if (roomNumber == -1)
+		{
+			return 0;
+		}
+		cout << "[Podaj ilosc lozek: ";
+		cin >> numberOfBeds;
+		if (numberOfBeds < 0 and numberOfBeds > 3)
+		{
+			cout << "Liczba lozek jest nieprawidlowa!" << endl;
+		}
+		else
+		{
+			//addroom
+			break;
+		}
+		system("cls");
+	}
+
+}
+int Interface::addResident()
+{
+	string PESEL, firstName, lastName, email;
+	int roomNumber;
+	while (true)
+	{
+		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
+		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
+		cout << "[Wpisz PESEL: ";
+		cin >> PESEL;
+		if (PESEL == "0")
+		{
+			return 0;
+		}
+		if (PESEL.size() != 11)
+		{
+			cout << "PESEL nie jest ciagiem 11 cyfr" << endl;
+		}
+		cout << "[Podaj imie mieszkanca: ";
+		cin >> firstName;
+		cout << "Podaj nazwisko mieszkanca: ";
+		cin >> lastName;
+		cout << "Podaj adres email mieszkanca: ";
+		cin >> email;
+		cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";
+		cin >> roomNumber;
+		//if ()
+		//{
+		//	cout << "Podany pokoj nie istnieje!";
+		//}
+		//else
+		//{
+		//	//dodaj mieszkanca
+		//	break;
+		//}
+		system("cls");
+	}
+
+}
+string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "("
+"pesel VARCHAR(11) PRIMARY KEY,"
+"first_name VARCHAR(30) NOT NULL,"
+"last_name VARCHAR(30) NOT NULL,"
+"email VARCHAR(40) NOT NULL,"
+"room_number VARCHAR(4),"
+"FOREIGN KEY (room_number) REFERENCES Room(room_number)"
+");";
