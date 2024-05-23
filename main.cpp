@@ -14,18 +14,24 @@ int main(int argc, char** argv)
     string tableNameUsers = "Users";
 
     Room room(tableNameRooms);
-   //room.createTableRoom(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
+    room.createTableRoom();
 
     Resident resident(tableNameResident);
-    //resident.createTableResident(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
-
+    resident.createTableResident(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
+    
     User user(tableNameUsers);
-   // user.createTableUser();
+    user.createTableUser();
 
-    Interface i1;
+    string username = "DawidGala1";
+    string mail = "Dawid@gmail.com";
+    string passowrd = "password";
+    user.addUser(username, mail, passowrd);
+    cout<< user.retrieveSaltFromUser(username);
+    
+    //Interface i1;
 
-    i1.welcomePage();
-    i1.pageWhenUCanLoginOrRegisterOrExit();
+    //i1.welcomePage();
+    //i1.pageWhenUCanLoginOrRegisterOrExit();
 
     
 }
