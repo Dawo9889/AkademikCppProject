@@ -18,9 +18,28 @@ int main(int argc, char** argv)
     resident.createTableResident(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
     Interface i1;
-
+	int decision{};
     i1.welcomePage();
-    i1.pageWhenUCanLoginOrRegisterOrExit();
+	while (true)
+	{
+		while (true)
+		{
+			decision = i1.pageWhenUCanLoginOrRegisterOrExit(); //ekran wyboru: 1 - logowanie, 2 - rejestracja, 3 - wyjscie
+			if (decision == 1)
+			{
+				cout << "logowanie";
+			}
+			else if (decision == 2)
+			{
+				cout << "rejestracja";
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	}
 
+	return 0;
     
 }

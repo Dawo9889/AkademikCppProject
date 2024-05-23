@@ -6,21 +6,41 @@ using namespace std;
 void Interface::welcomePage()
 {
 	cout << "Witaj";
-	Sleep(300);
+	Sleep(3000);
 }
-void Interface::pageWhenUCanLoginOrRegisterOrExit()
+int Interface::pageWhenUCanLoginOrRegisterOrExit()
 {
-	int deciscion{};
+	int decision{};
 	system("cls");
 
-	//while (true)
+	cout << "														"<<endl;
+	cout << "    -------------      -------------      -----------      " << endl;
+	cout << "   |  Logowanie  |    | Rejestracja |    |  Wyjœcie  |      " << endl;
+	cout << "   |             |    |             |    |           |      " << endl;
+	cout << "   |      1      |    |      2      |    |     3     |      " << endl;
+	cout << "   |             |    |             |    |           |      " << endl;
+	cout << "    -------------      -------------      -----------      " << endl;
+
+	cin >> decision;
+	if (decision == 1 || decision == 2 || decision == 3)
 	{
-		cout << "														"<<endl;
-		cout << "    -------------      -------------      -----------      " << endl;
-		cout << "   |  Logowanie  |    | Rejestracja |    |  Wyjœcie  |      " << endl;
-		cout << "   |             |    |             |    |           |      " << endl;
-		cout << "   |      1      |    |      2      |    |     3     |      " << endl;
-		cout << "   |             |    |             |    |           |      " << endl;
-		cout << "    -------------      -------------      -----------      " << endl;
+		system("cls");
+		return decision;
 	}
+	else
+	{
+		cin.clear();
+		cin.ignore();
+		cout << " >>> Nieprawidlowa decyzja <<< " << endl;
+		Sleep(1000);
+		system("cls");
+	}
+}
+int Interface::loginPage()
+{
+
+}
+int Interface::registerPage()
+{
+
 }
