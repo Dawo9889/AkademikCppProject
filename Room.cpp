@@ -33,8 +33,7 @@ int Room::createTableRoom(){
 int Room::addRoom(string& room_number, int& number_of_beds, bool& is_available)
 {
 	if (isRoomInDatabase(room_number) == 1) {
-		cout << "!!! Room already exists !!! " << endl;
-		return 0;
+		return 0; // Pokój ju¿ istnieje
 	}
 
 	sqlite3* db;
@@ -42,54 +41,58 @@ int Room::addRoom(string& room_number, int& number_of_beds, bool& is_available)
 	string fileName = "Akademik.db";
 	int result = sqlite3_open(fileName.c_str(), &db);
 	if (result != SQLITE_OK) {
-		cout << "Application error: " << sqlite3_errmsg(db) << endl;
+		cout << "B³¹d aplikacji: " << sqlite3_errmsg(db) << endl;
 		sqlite3_close(db);
 		return result;
 	}
 
-	// Adding new user
+	// Dodawanie nowego pokoju
+	string tableName = "rooms"; // Upewnij siê, ¿e nazwa tabeli jest poprawna
 	string insertSQL = "INSERT INTO " + tableName + " (room_number, number_of_beds, is_available) VALUES (?, ?, ?)";
 	result = sqlite3_prepare_v2(db, insertSQL.c_str(), -1, &stmt, nullptr);
 	if (result != SQLITE_OK) {
-		cout << "Application Error: " << sqlite3_errmsg(db) << endl;
+		cout << "B³¹d aplikacji (prepare): " << sqlite3_errmsg(db) << endl;
 		sqlite3_finalize(stmt);
 		sqlite3_close(db);
 		return result;
+	}
 
-		// Setting parameters with data
-		result = sqlite3_bind_text(stmt, 1, room_number.c_str(), -1, SQLITE_STATIC);
-		if (result != SQLITE_OK) {
-			cout << "Application Error: " << sqlite3_errmsg(db) << endl;
-			sqlite3_finalize(stmt);
-			sqlite3_close(db);
-			return result;
-		}
-		result = sqlite3_bind_int(stmt, 1, number_of_beds);
-		if (result != SQLITE_OK) {
-			cout << "Application Error: " << sqlite3_errmsg(db) << endl;
-			sqlite3_finalize(stmt);
-			sqlite3_close(db);
-			return result;
-		}
-		result = sqlite3_bind_int(stmt, 1, is_available ? 1 : 0);
-		if (result != SQLITE_OK) {
-			cout << "Application Error: " << sqlite3_errmsg(db) << endl;
-			sqlite3_finalize(stmt);
-			sqlite3_close(db);
-			return result;
-		}
-		result = sqlite3_step(stmt);
-		if (result != SQLITE_DONE) {
-			cout << "Application Error: " << sqlite3_errmsg(db) << endl;
-			sqlite3_finalize(stmt);
-			sqlite3_close(db);
-			return result;
-		}
+	// Ustawianie parametrów z danymi
+	result = sqlite3_bind_text(stmt, 1, room_number.c_str(), -1, SQLITE_STATIC);
+	if (result != SQLITE_OK) {
+		cout << "B³¹d aplikacji (bind_text): " << sqlite3_errmsg(db) << endl;
 		sqlite3_finalize(stmt);
 		sqlite3_close(db);
-		return 1; // Success
+		return result;
 	}
+	result = sqlite3_bind_int(stmt, 2, number_of_beds);
+	if (result != SQLITE_OK) {
+		cout << "B³¹d aplikacji (bind_int): " << sqlite3_errmsg(db) << endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return result;
+	}
+	result = sqlite3_bind_int(stmt, 3, is_available ? 1 : 0);
+	if (result != SQLITE_OK) {
+		cout << "B³¹d aplikacji (bind_int): " << sqlite3_errmsg(db) << endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return result;
+	}
+
+	result = sqlite3_step(stmt);
+	if (result != SQLITE_DONE) {
+		cout << "B³¹d aplikacji (step): " << sqlite3_errmsg(db) << endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return result;
+	}
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+	return 1; // Sukces
 }
+
 int Room::isRoomInDatabase(string& room_number)
 {
 	sqlite3* db;

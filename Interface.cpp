@@ -156,11 +156,11 @@ int Interface::registerPage(User& user)
 				{
 					cout << "!!! User already exists !!! " << endl << endl;
 					Sleep(2000);
-					break; // Break the inner loop to ask for new login and email
+					break;
 				}
 				else {
 					Sleep(2000);
-					return 1; // Exit after successful registration
+					return 1;
 				}
 			}
 			else {
@@ -289,9 +289,13 @@ int Interface::addRoomInterface(User& user, Room& room, Resident& resident)
 			decision = room.addRoom(roomNumber, numberOfBeds, isAvailable);
 			if (decision == 0)
 			{
-				system("cls");
-				cout << "!!! Room already exists !!! " << endl << endl;
-				administrationPanel(user, room, resident);
+				cout << "!!! Pokoj juz istnieje !!! " << endl << endl;
+				Sleep(2000);
+				break;
+			}
+			else
+			{
+				return 1;
 			}
 		}
 		else {
