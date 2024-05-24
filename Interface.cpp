@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <string>
 #include <conio.h>
-
+#include "User.h"
 using namespace std;
 
 string getPassword() {
@@ -24,13 +24,13 @@ string getPassword() {
 	return password;
 }
 
-void Interface::welcomePage()
+void Interface::welcomePage(User& user)
 {
 	/*cout << "Witaj";
 	Sleep(3000);*/
-	mainMenu();
+	mainMenu(user);
 }
-int Interface::mainMenu()
+int Interface::mainMenu(User& user)
 {
 	int decision{};
 	while (true)
@@ -48,7 +48,7 @@ int Interface::mainMenu()
 			}
 			else if (decision == 2)
 			{
-				registerPage();
+				registerPage(user);
 			}
 			else
 			{
@@ -124,9 +124,10 @@ int Interface::loginPage()
 	}
 	return 4;
 }
-int Interface::registerPage()
+int Interface::registerPage(User& user)
 {
-	string login, password,passwordConfirm, role;
+	string login, password,passwordConfirm, email;
+	int decision{};
 	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
 	cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
 	cout << "[Podaj login: ";
@@ -135,14 +136,21 @@ int Interface::registerPage()
 	{
 		return 0;
 	}
+	cout << "[Podaj email: ";
+	cin >> email;
 	while (true) {
 		cout << "[Podaj haslo: ";
 		password = getPassword();
 		cout << "[Powtorz haslo: ";
 		passwordConfirm = getPassword();
 		if (password == passwordConfirm) {
-			// addrow
-			break;
+			decision = user.addUser(login,email ,password);
+			if (decision == 0)
+			{
+				system("cls");
+				cout << "!!! User already exists !!! " << endl << endl;
+				registerPage(user);
+			}
 		}
 		else {
 			cout << "Hasla nie pasuja do siebie, podaj ponownie haslo" << endl;
