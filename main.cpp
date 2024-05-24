@@ -18,27 +18,7 @@ int main(int argc, char** argv)
     resident.createTableResident(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
     Interface i1;
-	int decision{};
     i1.welcomePage();
-	while (true)
-	{
-		while (true)
-		{
-			decision = i1.pageWhenUCanLoginOrRegisterOrExit(); //ekran wyboru: 1 - logowanie, 2 - rejestracja, 3 - wyjscie
-			if (decision == 1)
-			{
-				i1.loginPage();
-			}
-			else if (decision == 2)
-			{
-				i1.registerPage();
-			}
-			else
-			{
-				return 0;
-			}
-		}
-	}
 
 	return 0;
     

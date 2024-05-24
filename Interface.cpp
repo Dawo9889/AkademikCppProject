@@ -26,8 +26,36 @@ string getPassword() {
 
 void Interface::welcomePage()
 {
-	cout << "Witaj";
-	Sleep(3000);
+	/*cout << "Witaj";
+	Sleep(3000);*/
+	mainMenu();
+}
+int Interface::mainMenu()
+{
+	int decision{};
+	while (true)
+	{
+		while (true)
+		{
+			decision = pageWhenUCanLoginOrRegisterOrExit(); //ekran wyboru: 1 - logowanie, 2 - rejestracja, 3 - wyjscie
+			if (decision == 1)
+			{
+				decision = loginPage();
+				if (decision == 4)
+				{
+					break;
+				}
+			}
+			else if (decision == 2)
+			{
+				registerPage();
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	}
 }
 int Interface::pageWhenUCanLoginOrRegisterOrExit()
 {
@@ -74,15 +102,27 @@ int Interface::loginPage()
 			return 0;
 		}
 		cout << "[Wpisz haslo: ";
-		cin >> password;
-		/*if (t.loginCheck(login, pass) == true) //za pomoca metody loginCheck sprawdzamy czy wszystko jest git
+		password = getPassword();
+		//if (t.loginCheck(login, pass) == true) //za pomoca metody loginCheck sprawdzamy czy wszystko jest git
+		//{
+		//	Sleep(1000);
+		//	break;
+		//}
+		if (login == "hubert" && password == "hubert")
 		{
-			Sleep(1000);
+			cout << "Zalogowano pomyslnie!" << endl;
+			Sleep(2000);
+			administrationPanel();
 			break;
-		}*/
+		}
+		else
+		{
+			cout << "Login lub haslo jest nieprawidlowy!" << endl;
+			Sleep(1000);
+		}
 		system("cls");
 	}
-	return 0;
+	return 4;
 }
 int Interface::registerPage()
 {
@@ -178,11 +218,75 @@ int Interface::addResident()
 	}
 
 }
-string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "("
-"pesel VARCHAR(11) PRIMARY KEY,"
-"first_name VARCHAR(30) NOT NULL,"
-"last_name VARCHAR(30) NOT NULL,"
-"email VARCHAR(40) NOT NULL,"
-"room_number VARCHAR(4),"
-"FOREIGN KEY (room_number) REFERENCES Room(room_number)"
-");";
+void Interface::logoutPage()
+{
+	system("cls");
+	cout << ">>> Pomyslnie wylogowano z systemu <<<" << endl;
+	Sleep(2000);
+	loginPage();
+}
+
+int Interface::goodbyePage()
+{
+	system("cls");
+	cout << " -------------- " << endl;
+	cout << "| Do widzenia! |" << endl;
+	cout << " -------------- " << endl;
+	Sleep(2000);
+	return 0;
+}
+void Interface::managingResidentsPage()
+{
+
+}
+void Interface::managingRoomsPage()
+{
+
+}
+int Interface::administrationPanel()
+{
+	int decision{};
+	while (true)
+	{
+		system("cls");
+		cout << " ----------------------------------------  " << endl;
+		cout << "|          Panel administracyjny         | " << endl;
+		cout << "|                                        | " << endl;
+		cout << "|> 1 + ENTER: Zarzadzanie mieszkancami   | " << endl;
+		cout << "|> 2 + ENTER: Zarzadzanie pokojami       | " << endl;
+		cout << "|> 3 + ENTER  Wylogowanie                | " << endl;
+		cout << "|> 4 + ENTER  Zamknij aplikacje          | " << endl;
+		cout << "|                                        | " << endl;
+		cout << " ----------------------------------------  " << endl;
+		cout << "Wybierz opcje: ";
+		cin >> decision;
+
+		if (decision == 1)
+		{
+			managingResidentsPage();
+		}
+		else if (decision == 2)
+		{
+			
+		}
+		else if (decision == 3)
+		{
+			logoutPage();
+			return 1;
+		}
+		else if (decision == 4)
+		{
+			goodbyePage();
+			return 0;
+		}
+		else
+		{
+			cin.clear();
+			cin.ignore();
+			system("cls");
+			cout << ">>> Nieprawidlowa decyzja <<<" << endl;
+			Sleep(1000);
+		}
+	}
+	return 0;
+}
