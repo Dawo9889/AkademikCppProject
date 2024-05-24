@@ -10,14 +10,14 @@ class Interface
 public:
 	void welcomePage(User& user, Room& room);
 	int pageWhenUCanLoginOrRegisterOrExit();
-	int loginPage(Room& room);
-	int registerPage(User& user);
+	int loginPage(User& user, Room& room);
+	int registerPage(User& user, Room& room);
 	int addResident();
 	int mainMenu(User& user, Room& room);
-	int administrationPanel(Room& room);
-	void logoutPage(Room& room);
+	int administrationPanel(User& user, Room& room);
+	void logoutPage(User& user, Room& room);
 	int goodbyePage();
 	void managingResidentsPage();
-	int managingRoomsPage(Room& room);
-	int addRoomInterface(Room& room);
+	int managingRoomsPage(User& user, Room& room);
+	int addRoomInterface(User& user, Room& room);
 };
