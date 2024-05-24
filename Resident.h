@@ -10,5 +10,6 @@ private:
 public:
 	int createTableResident();
 	Resident(string& name);
+	int addResident(string& PESEL, string& firstName, string& lastName, string& email, int roomNumber);
 };
 

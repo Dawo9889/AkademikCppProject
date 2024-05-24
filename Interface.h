@@ -13,12 +13,12 @@ public:
 	int pageWhenUCanLoginOrRegisterOrExit();
 	int loginPage(User& user, Room& room, Resident& resident);
 	int registerPage(User& user);
-	int addResident();
+	int addResident(User& user, Room& room, Resident& resident);
 	int mainMenu(User& user, Room& room, Resident& resident);
 	int administrationPanel(User& user, Room& room, Resident& resident);
 	void logoutPage(User& user, Room& room, Resident& resident);
 	int goodbyePage();
-	void managingResidentsPage();
+	int managingResidentsPage(User& user, Room& room, Resident& resident);
 	int managingRoomsPage(User& user, Room& room, Resident& resident);
 	int addRoomInterface(User& user, Room& room, Resident& resident);
 };
