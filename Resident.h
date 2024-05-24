@@ -11,5 +11,6 @@ public:
 	int createTableResident();
 	Resident(string& name);
 	int addResident(string& PESEL, string& firstName, string& lastName, string& email, int roomNumber);
+	bool isResidentInDatabase(string& PESEL);
 };
 

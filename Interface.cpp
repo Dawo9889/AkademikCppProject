@@ -64,7 +64,7 @@ int Interface::pageWhenUCanLoginOrRegisterOrExit()
 	int decision{};
 	system("cls");
 
-	cout << "														"<<endl;
+	cout << "														" << endl;
 	cout << "    -------------      -------------      -----------      " << endl;
 	cout << "   |  Logowanie  |    | Rejestracja |    |  Wyjœcie  |      " << endl;
 	cout << "   |             |    |             |    |           |      " << endl;
@@ -195,13 +195,21 @@ int Interface::addResident(User& user, Room& room, Resident& resident)
 		cin >> email;
 		cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";
 		cin >> roomNumber;
-		
-		resident.addResident(PESEL, firstName, lastName, email, roomNumber);
-		break;
-		
+		if (!resident.isResidentInDatabase(PESEL)) {
+			resident.addResident(PESEL, firstName, lastName, email, roomNumber);
+			cout << "Resident added";
+			Sleep(2000);
+			break;
+		}
+		else
+		{
+			cout << "Mieszkaniec taki juz znajduje sie w naszej bazie danych";
+			Sleep(2000);
+			break;
+		}
+
 		system("cls");
 	}
-
 }
 void Interface::logoutPage(User& user, Room& room, Resident& resident)
 {
@@ -225,7 +233,6 @@ int Interface::managingResidentsPage(User& user, Room& room, Resident& resident)
 	int decision{};
 	while (true)
 	{
-		
 		system("cls");
 		cout << " ----------------------------------------  " << endl;
 		cout << "|       Zarzadzanie mieszkancami         | " << endl;
@@ -244,7 +251,6 @@ int Interface::managingResidentsPage(User& user, Room& room, Resident& resident)
 		}
 		else if (decision == 2)
 		{
-
 		}
 		else if (decision == 3)
 		{
@@ -285,7 +291,6 @@ int Interface::managingRoomsPage(User& user, Room& room, Resident& resident)
 		}
 		else if (decision == 2)
 		{
-
 		}
 		else if (decision == 3)
 		{

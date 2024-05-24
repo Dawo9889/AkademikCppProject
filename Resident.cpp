@@ -113,3 +113,40 @@ int Resident::addResident(string& PESEL, string& firstName, string& lastName, st
     sqlite3_close(db);
     return 1; // Success
 }
+
+bool Resident::isResidentInDatabase(string& PESEL) 
+{
+    sqlite3* db;
+    sqlite3_stmt* stmt;
+    std::string fileName = "Akademik.db";
+
+    int result = sqlite3_open(fileName.c_str(), &db);
+    if (result != SQLITE_OK) {
+        std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+
+    std::string selectSQL = "SELECT 1 FROM " + this->tableName + " WHERE pesel = ?";
+    result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
+    if (result != SQLITE_OK) {
+        std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return false;
+    }
+
+    result = sqlite3_bind_text(stmt, 1, PESEL.c_str(), -1, SQLITE_STATIC);
+    if (result != SQLITE_OK) {
+        std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return false;
+    }
+
+    result = sqlite3_step(stmt);
+    bool exists = (result == SQLITE_ROW);
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return exists;
+}
