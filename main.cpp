@@ -28,7 +28,7 @@ int main(int argc, char** argv)
     user.addUser(username, mail, passowrd);*/
 
     Interface i1;
-    i1.welcomePage(user);
+    i1.welcomePage(user, room);
 
 	return 0;
     

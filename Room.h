@@ -10,5 +10,7 @@ private:
 public:
 	int createTableRoom();
 	Room(string& name);
+	int addRoom(string& roomNumber, int& numberOfBeds, bool& is_available);
+	int isRoomInDatabase(string& roomNumber);
 };
 

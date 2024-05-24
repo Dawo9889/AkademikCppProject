@@ -3,6 +3,7 @@
 #include <string>
 #include <conio.h>
 #include "User.h"
+#include "Room.h"
 using namespace std;
 
 string getPassword() {
@@ -24,13 +25,13 @@ string getPassword() {
 	return password;
 }
 
-void Interface::welcomePage(User& user)
+void Interface::welcomePage(User& user,Room& room)
 {
 	/*cout << "Witaj";
 	Sleep(3000);*/
-	mainMenu(user);
+	mainMenu(user, room);
 }
-int Interface::mainMenu(User& user)
+int Interface::mainMenu(User& user, Room& room)
 {
 	int decision{};
 	while (true)
@@ -40,7 +41,7 @@ int Interface::mainMenu(User& user)
 			decision = pageWhenUCanLoginOrRegisterOrExit(); //ekran wyboru: 1 - logowanie, 2 - rejestracja, 3 - wyjscie
 			if (decision == 1)
 			{
-				decision = loginPage();
+				decision = loginPage(room);
 				if (decision == 4)
 				{
 					break;
@@ -86,7 +87,7 @@ int Interface::pageWhenUCanLoginOrRegisterOrExit()
 		system("cls");
 	}
 }
-int Interface::loginPage()
+int Interface::loginPage(Room& room)
 {
 	string password;
 	string login;
@@ -112,7 +113,7 @@ int Interface::loginPage()
 		{
 			cout << "Zalogowano pomyslnie!" << endl;
 			Sleep(2000);
-			administrationPanel();
+			administrationPanel(room);
 			break;
 		}
 		else
@@ -157,36 +158,6 @@ int Interface::registerPage(User& user)
 		}
 	}
 }
-int Interface::addRoomToStudentHouse()
-{
-	int roomNumber, numberOfBeds;
-	bool isAvailable = true;
-
-	while (true)
-	{
-		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu -1 + ENTER]" << endl;
-		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
-		cout << "[Wpisz login: ";
-		cin >> roomNumber;
-		if (roomNumber == -1)
-		{
-			return 0;
-		}
-		cout << "[Podaj ilosc lozek: ";
-		cin >> numberOfBeds;
-		if (numberOfBeds < 0 and numberOfBeds > 3)
-		{
-			cout << "Liczba lozek jest nieprawidlowa!" << endl;
-		}
-		else
-		{
-			//addroom
-			break;
-		}
-		system("cls");
-	}
-
-}
 int Interface::addResident()
 {
 	string PESEL, firstName, lastName, email;
@@ -226,12 +197,12 @@ int Interface::addResident()
 	}
 
 }
-void Interface::logoutPage()
+void Interface::logoutPage(Room& room)
 {
 	system("cls");
 	cout << ">>> Pomyslnie wylogowano z systemu <<<" << endl;
 	Sleep(2000);
-	loginPage();
+	loginPage(room);
 }
 
 int Interface::goodbyePage()
@@ -247,11 +218,77 @@ void Interface::managingResidentsPage()
 {
 
 }
-void Interface::managingRoomsPage()
+int Interface::managingRoomsPage(Room& room)
 {
+	int decision{};
+	while (true)
+	{
+		system("cls");
+		cout << " ----------------------------------------  " << endl;
+		cout << "|          Zarzadzanie pokojami          | " << endl;
+		cout << "|                                        | " << endl;
+		cout << "|> 1 + ENTER: Dodawanie pokojow          | " << endl;
+		cout << "|> 2 + ENTER: Usuwanie pokojow           | " << endl;
+		cout << "|> 3 + ENTER  Wstecz                     | " << endl;
+		cout << "|                                        | " << endl;
+		cout << " ----------------------------------------  " << endl;
+		cout << "Wybierz opcje: ";
+		cin >> decision;
 
+		if (decision == 1)
+		{
+			addRoomInterface(room);
+		}
+		else if (decision == 2)
+		{
+
+		}
+		else if (decision == 3)
+		{
+			administrationPanel(room);
+			return 1;
+		}
+		else
+		{
+			cin.clear();
+			cin.ignore();
+			system("cls");
+			cout << ">>> Nieprawidlowa decyzja <<<" << endl;
+			Sleep(1000);
+		}
+	}
 }
-int Interface::administrationPanel()
+int Interface::addRoomInterface(Room& room)
+{
+	string roomNumber;
+	int decision{}, numberOfBeds{};
+	bool isAvailable = true;
+	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
+	cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
+	cout << "[Podaj numer pokoju: ";
+	cin >> roomNumber;
+	if (roomNumber == "0")
+	{
+		return 0;
+	}
+	while (true) {
+		cout << "[Podaj ilosc lozek w pokoju: ";
+		cin >> numberOfBeds;
+		if (numberOfBeds > 0 and numberOfBeds < 4) {
+			decision = room.addRoom(roomNumber, numberOfBeds, isAvailable);
+			if (decision == 0)
+			{
+				system("cls");
+				cout << "!!! Room already exists !!! " << endl << endl;
+				administrationPanel(room);
+			}
+		}
+		else {
+			cout << "Ilosc w lozek w pokoju to 1,2 lub 3" << endl;
+		}
+	}
+}
+int Interface::administrationPanel(Room& room)
 {
 	int decision{};
 	while (true)
@@ -275,11 +312,11 @@ int Interface::administrationPanel()
 		}
 		else if (decision == 2)
 		{
-			
+			managingRoomsPage(room);
 		}
 		else if (decision == 3)
 		{
-			logoutPage();
+			logoutPage(room);
 			return 1;
 		}
 		else if (decision == 4)
