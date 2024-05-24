@@ -116,6 +116,7 @@ int Interface::loginPage(User& user, Room& room, Resident& resident)
 		}
 		else {
 			cout << "There is no such an user";
+			Sleep(3000);
 		}
 		system("cls");
 	}

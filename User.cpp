@@ -114,21 +114,21 @@ int User::addUser(string& username, string& email, string& password)
 
 string User::generateSalt(size_t length)
 {
-	const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	const size_t max_index = sizeof(charset) - 1;
+    const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const size_t max_index = sizeof(charset) - 1; // Size of charset minus null terminator
 
-	string salt;
-	salt.reserve(length);
+    string salt;
+    salt.reserve(length); // Reserve space for efficiency
 
-	random_device rd;
-	mt19937 gen(rd());
-	uniform_int_distribution<> dis(0, max_index);
+    random_device rd; // Obtain a random number from hardware
+    mt19937 gen(rd()); // Seed the generator
+    uniform_int_distribution<> dis(0, max_index - 1); // Define the range
 
-	for (size_t i = 0; i < length; ++i) {
-		salt += charset[dis(gen)];
-	}
+    for (size_t i = 0; i < length; ++i) {
+        salt += charset[dis(gen)]; // Append a random character from charset
+    }
 
-	return salt;
+    return salt; // Return the generated salt
 }
 string User::generateHash(const string& password, const string& salt)
 {
