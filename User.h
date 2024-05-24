@@ -28,6 +28,7 @@ public:
 	};
 	UserCredentials getUserCredentials(string& username);
 	bool validateCredentials(string& username, string& password);
+	string getUserRole(const std::string& username);
 	
 };
 
