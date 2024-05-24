@@ -1,4 +1,7 @@
 #include "User.h"
+
+
+
 User::User(string& name) {
 	this->tableName = name;
 }
@@ -38,7 +41,7 @@ int User::addUser(string& username, string& email, string& password)
 {
     if (isUserInDatabase(username) == 1) {
         cout << "!!! User already exists !!! " << endl;
-        return 3; // User already exists
+        return 0; // User already exists
     }
 
     sqlite3* db;
@@ -127,78 +130,90 @@ string User::generateSalt(size_t length)
 
 	return salt;
 }
-string User::retrieveSaltFromUser(string& username) 
-{
-	if (!(isUserInDatabase(username) == 1)) {
-		cout << "!!! User does not exist !!! " << endl;
-		return "";
-	}
-
-    sqlite3* db;
-    sqlite3_stmt* stmt;
-    std::string fileName = "Akademik.db";
-    std::string password_salt;
-
-    // Database Open
-    int result = sqlite3_open(fileName.c_str(), &db);
-    if (result != SQLITE_OK) {
-        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
-        sqlite3_close(db);
-        return "";
-    }
-
-    // Prepare SQL Query 
-    std::string selectSQL = "SELECT password_salt FROM " + tableName + " WHERE username = ?";
-    result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
-    if (result != SQLITE_OK) {
-        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
-        sqlite3_close(db);
-        return "";
-    }
-
-    // Associating a parameter with a username
-    result = sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
-    if (result != SQLITE_OK) {
-        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
-        sqlite3_finalize(stmt);
-        sqlite3_close(db);
-        return "";
-    }
-
-    // Execute an Query
-    result = sqlite3_step(stmt);
-    if (result == SQLITE_ROW) {
-        // Powi¹zanie parametru z nazw¹ u¿ytkownika
-        const unsigned char* salt = sqlite3_column_text(stmt, 0);
-        password_salt = std::string(reinterpret_cast<const char*>(salt));
-    }
-    else {
-        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
-    }
-
-    // Finish an query and close connection
-    sqlite3_finalize(stmt);
-    sqlite3_close(db);
-
-    return password_salt;
-
-}
 string User::generateHash(const string& password, const string& salt)
 {
 	
 	string combined = password + salt;
-	unsigned int hash = 0;
+	unsigned long hash = 0;
 
 	for (char c : combined) {
 		hash = hash * 31 + c; //simple hashing function
 	}
 
 	//confert hash to hex values
-	std::stringstream ss;
-	ss << std::hex << hash;
+	stringstream ss;
+	ss << hex << hash;
 	return ss.str();
 }
 
+bool User::validateCredentials(string& username, string& password)
+{
+    UserCredentials userCredentials = getUserCredentials(username);
+    if (userCredentials.username.empty()) {
+        return false; // username not found
+    }
+
+    // generate hash based on retrived password from user and salt from database
+    string generatedHash = generateHash(password, userCredentials.password_salt);
+
+    // validating generated new hash to existed one in database
+    return generatedHash == userCredentials.password_hash;
+}
+
+User::UserCredentials User::getUserCredentials(string& username)
+{   sqlite3* db;
+    sqlite3_stmt* stmt;
+    UserCredentials userCredentials;
+    string fileName = "Akademik.db";
+
+    if (isUserInDatabase(username) != 1) {
+        cout << "!!! User not found i the database, you should register first !!! " << endl;
+        return userCredentials; // user not found
+    }
+    
+    // database open
+    int result = sqlite3_open(fileName.c_str(), &db);
+    if (result != SQLITE_OK) {
+        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return userCredentials;
+    }
+
+    // Przygotowanie zapytania SQL do pobrania danych u¿ytkownika
+    std::string selectSQL = "SELECT username, password_hash, password_salt FROM " + tableName + " WHERE username = ?";
+    result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
+    if (result != SQLITE_OK) {
+        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return userCredentials;
+    }
+
+    // Powi¹zanie parametru z nazw¹ u¿ytkownika
+    result = sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
+    if (result != SQLITE_OK) {
+        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return userCredentials;
+    }
+
+    // Wykonanie zapytania i pobranie wyników
+    result = sqlite3_step(stmt);
+    if (result == SQLITE_ROW) {
+        userCredentials.username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        userCredentials.password_hash = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        userCredentials.password_salt = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+    }
+    else {
+        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
+    }
+
+    // Zakoñczenie zapytania i zamkniêcie bazy danych
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return userCredentials;
+}
 
 int User::isUserInDatabase(string& username)
 {

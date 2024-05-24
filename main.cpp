@@ -22,12 +22,13 @@ int main(int argc, char** argv)
     User user(tableNameUsers);
     user.createTableUser();
 
-    string username = "DawidGala1";
-    string mail = "Dawid@gmail.com";
-    string passowrd = "password";
+    string username = "hubert";
+    string mail = "chuj@gmail.com";
+    string passowrd = "hubert";
     user.addUser(username, mail, passowrd);
-    cout<< user.retrieveSaltFromUser(username);
     
+    
+
     //Interface i1;
 
     //i1.welcomePage();
