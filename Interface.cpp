@@ -4,6 +4,7 @@
 #include <conio.h>
 #include "User.h"
 #include "Room.h"
+#include "Resident.h"
 using namespace std;
 
 string getPassword() {
@@ -25,13 +26,13 @@ string getPassword() {
 	return password;
 }
 
-void Interface::welcomePage(User& user,Room& room)
+void Interface::welcomePage(User& user, Room& room, Resident& resident)
 {
 	/*cout << "Witaj";
 	Sleep(3000);*/
-	mainMenu(user, room);
+	mainMenu(user, room, resident);
 }
-int Interface::mainMenu(User& user, Room& room)
+int Interface::mainMenu(User& user, Room& room, Resident& resident)
 {
 	int decision{};
 	while (true)
@@ -41,7 +42,7 @@ int Interface::mainMenu(User& user, Room& room)
 			decision = pageWhenUCanLoginOrRegisterOrExit(); //ekran wyboru: 1 - logowanie, 2 - rejestracja, 3 - wyjscie
 			if (decision == 1)
 			{
-				decision = loginPage(user,room);
+				decision = loginPage(user, room, resident);
 				if (decision == 4)
 				{
 					break;
@@ -49,7 +50,7 @@ int Interface::mainMenu(User& user, Room& room)
 			}
 			else if (decision == 2)
 			{
-				registerPage(user, room);
+				registerPage(user);
 			}
 			else
 			{
@@ -75,6 +76,7 @@ int Interface::pageWhenUCanLoginOrRegisterOrExit()
 	cin >> decision;
 	if (decision == 1 || decision == 2 || decision == 3)
 	{
+		system("cls");
 		return decision;
 	}
 	else
@@ -83,10 +85,10 @@ int Interface::pageWhenUCanLoginOrRegisterOrExit()
 		cin.ignore();
 		cout << " >>> Nieprawidlowa decyzja <<< " << endl;
 		Sleep(1000);
+		system("cls");
 	}
-	system("cls");
 }
-int Interface::loginPage(User& user,Room& room)
+int Interface::loginPage(User& user, Room& room, Resident& resident)
 {
 	string password;
 	string login;
@@ -99,63 +101,71 @@ int Interface::loginPage(User& user,Room& room)
 		cin >> login;
 		if (login == "0")
 		{
-			mainMenu(user, room);
-			break;
+			return 0;
 		}
 		cout << "[Wpisz haslo: ";
 		password = getPassword();
-		if (login == "hubert" && password == "hubert")
-		{
-			cout << "Zalogowano pomyslnie!" << endl;
-			Sleep(2000);
-			administrationPanel(user, room);
-			break;
+		if (user.validateCredentials(login, password)) {
+			if (user.getUserRole(login) == "admin") {
+				administrationPanel(user, room, resident);
+			}
+			else {
+				cout << "User is not an admin";
+				Sleep(3000);
+			}
 		}
-		else
-		{
-			cout << "Login lub haslo jest nieprawidlowy!" << endl;
-			Sleep(1000);
+		else {
+			cout << "There is no such an user";
 		}
 		system("cls");
 	}
 	return 4;
 }
-int Interface::registerPage(User& user,Room& room)
+int Interface::registerPage(User& user)
 {
-	system("cls");
-	string login, password,passwordConfirm, email;
+	string login, password, passwordConfirm, email;
 	int decision{};
 	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
 	cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
-	cout << "[Podaj login: ";
-	cin >> login;
-	if (login == "0")
-	{
-		mainMenu(user,room);
-		return 0;
-	}
-	cout << "[Podaj email: ";
-	cin >> email;
+
 	while (true) {
-		cout << "[Podaj haslo: ";
-		password = getPassword();
-		cout << "[Powtorz haslo: ";
-		passwordConfirm = getPassword();
-		if (password == passwordConfirm) {
-			decision = user.addUser(login,email ,password);
-			if (decision == 0)
-			{
-				system("cls");
-				cout << "!!! User already exists !!! " << endl << endl;
-				registerPage(user,room);
-			}
-			else
-			{
-				break;
-			}
+		cout << "[Podaj login: ";
+		cin >> login;
+		if (login == "0")
+		{
+			return 0; // Exit the registration
 		}
-		else {
-			cout << "Hasla nie pasuja do siebie, podaj ponownie haslo" << endl;
+
+		cout << "[Podaj email: ";
+		cin >> email;
+		if (email == "0")
+		{
+			return 0; // Exit the registration
+		}
+
+		while (true) {
+			cout << "[Podaj haslo: ";
+			password = getPassword();
+			cout << "[Powtorz haslo: ";
+			passwordConfirm = getPassword();
+
+			if (password == passwordConfirm) {
+				decision = user.addUser(login, email, password);
+				if (decision == 0)
+				{
+					cout << "!!! User already exists !!! " << endl << endl;
+					Sleep(2000);
+					break; // Break the inner loop to ask for new login and email
+				}
+				else {
+					cout << "User registered successfully!" << endl;
+					Sleep(2000);
+					return 1; // Exit after successful registration
+				}
+			}
+			else {
+				cout << "Hasla nie pasuja do siebie, podaj ponownie haslo" << endl;
+			}
 		}
 	}
 }
@@ -185,16 +195,25 @@ int Interface::addResident()
 		cin >> email;
 		cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";
 		cin >> roomNumber;
+		//if ()
+		//{
+		//	cout << "Podany pokoj nie istnieje!";
+		//}
+		//else
+		//{
+		//	//dodaj mieszkanca
+		//	break;
+		//}
 		system("cls");
 	}
 
 }
-void Interface::logoutPage(User& user,Room& room)
+void Interface::logoutPage(User& user, Room& room, Resident& resident)
 {
 	system("cls");
 	cout << ">>> Pomyslnie wylogowano z systemu <<<" << endl;
 	Sleep(2000);
-	loginPage(user,room);
+	loginPage(user, room, resident);
 }
 
 int Interface::goodbyePage()
@@ -210,7 +229,7 @@ void Interface::managingResidentsPage()
 {
 
 }
-int Interface::managingRoomsPage(User& user,Room& room)
+int Interface::managingRoomsPage(User& user, Room& room, Resident& resident)
 {
 	int decision{};
 	while (true)
@@ -229,7 +248,7 @@ int Interface::managingRoomsPage(User& user,Room& room)
 
 		if (decision == 1)
 		{
-			addRoomInterface(user, room);
+			addRoomInterface(user, room, resident);
 		}
 		else if (decision == 2)
 		{
@@ -237,7 +256,7 @@ int Interface::managingRoomsPage(User& user,Room& room)
 		}
 		else if (decision == 3)
 		{
-			administrationPanel(user,room);
+			administrationPanel(user, room, resident);
 			return 1;
 		}
 		else
@@ -250,7 +269,7 @@ int Interface::managingRoomsPage(User& user,Room& room)
 		}
 	}
 }
-int Interface::addRoomInterface(User& user,Room& room)
+int Interface::addRoomInterface(User& user, Room& room, Resident& resident)
 {
 	string roomNumber;
 	int decision{}, numberOfBeds{};
@@ -266,13 +285,13 @@ int Interface::addRoomInterface(User& user,Room& room)
 	while (true) {
 		cout << "[Podaj ilosc lozek w pokoju: ";
 		cin >> numberOfBeds;
-		if (numberOfBeds > 0 && numberOfBeds < 4) {
+		if (numberOfBeds > 0 and numberOfBeds < 4) {
 			decision = room.addRoom(roomNumber, numberOfBeds, isAvailable);
 			if (decision == 0)
 			{
 				system("cls");
 				cout << "!!! Room already exists !!! " << endl << endl;
-				administrationPanel(user,room);
+				administrationPanel(user, room, resident);
 			}
 		}
 		else {
@@ -280,7 +299,7 @@ int Interface::addRoomInterface(User& user,Room& room)
 		}
 	}
 }
-int Interface::administrationPanel(User& user, Room& room)
+int Interface::administrationPanel(User& user, Room& room, Resident& resident)
 {
 	int decision{};
 	while (true)
@@ -304,11 +323,11 @@ int Interface::administrationPanel(User& user, Room& room)
 		}
 		else if (decision == 2)
 		{
-			managingRoomsPage(user, room);
+			managingRoomsPage(user, room, resident);
 		}
 		else if (decision == 3)
 		{
-			logoutPage(user, room);
+			logoutPage(user, room, resident);
 			return 1;
 		}
 		else if (decision == 4)

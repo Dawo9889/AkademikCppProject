@@ -20,7 +20,6 @@ public:
 	User(string& name);
 	int isUserInDatabase(string& username);
 	int addUser(string& username, string& email, string& password);
-	string retrieveSaltFromUser(string& username);
 	struct UserCredentials {
 		std::string username;
 		std::string password_hash;
