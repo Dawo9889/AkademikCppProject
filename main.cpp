@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 
     Resident resident(tableNameResident);
     resident.createTableResident(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
-    
+
     User user(tableNameUsers);
     user.createTableUser();
 
@@ -26,13 +26,7 @@ int main(int argc, char** argv)
     string mail = "chuj@gmail.com";
     string passowrd = "hubert";
     user.addUser(username, mail, passowrd);
-    
-    
 
-    //Interface i1;
-
-    //i1.welcomePage();
-    //i1.pageWhenUCanLoginOrRegisterOrExit();
-
+	return 0;
     
 }
