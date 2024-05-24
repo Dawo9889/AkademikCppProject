@@ -159,7 +159,6 @@ int Interface::registerPage(User& user)
 					break; // Break the inner loop to ask for new login and email
 				}
 				else {
-					cout << "User registered successfully!" << endl;
 					Sleep(2000);
 					return 1; // Exit after successful registration
 				}
