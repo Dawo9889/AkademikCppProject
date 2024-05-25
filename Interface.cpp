@@ -47,17 +47,13 @@ int Interface::mainMenu()
 			if (decision == 1)
 			{
 				decision = loginPage();
-				if (decision == 4)
-				{
-					break;
-				}
-				else if (decision == 0)
+				if (decision == 0)
 				{
 					return 0;
 				}
-				else if (decision == 1)
+				else
 				{
-					pageWhenUCanLoginOrRegisterOrExit();
+					break;
 				}
 			}
 			else if (decision == 2)
@@ -113,14 +109,13 @@ int Interface::loginPage()
 		cin >> login;
 		if (login == "0")
 		{
-			return 0;
+			return -1;
 		}
 		cout << "[Wpisz haslo: ";
 		password = getPassword();
 		if (user.validateCredentials(login, password)) {
 			if (user.getUserRole(login) == "admin") {
-				decision = administrationPanel();
-				return decision;
+				return administrationPanel();
 				break;
 			}
 			else {
@@ -417,7 +412,6 @@ int Interface::administrationPanel()
 		{
 			logoutPage();
 			return 1;
-			break;
 		}
 		else if (decision == 4)
 		{
