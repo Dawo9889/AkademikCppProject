@@ -182,6 +182,7 @@ int Interface::addResident() {
 	system("cls");
 	string PESEL, firstName, lastName, email;
 	int roomNumber{};
+	char decision{};
 	while (true) {
 		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
 		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
@@ -214,9 +215,18 @@ int Interface::addResident() {
 		if (!resident.isResidentInDatabase(PESEL)) {
 			if (!room.isRoomInDatabase(roomNumberStr)) {
 				system("cls");
-				cout << "Pokoj nie istnieje";
+				cout << "Pokoj nie istnieje"<<endl;
+				cout << "Czy chcesz dodac pokoj teraz [t/n]? ";
+				cin >> decision;
+				if (decision == 'n' || decision == 'N')
+				{
+					break;
+				}
+				else
+				{
+					addRoomInterface();
+				}
 				Sleep(2000);
-				break;
 			}
 			if (!room.isRoomAvailable(roomNumberStr)) {
 				system("cls");
