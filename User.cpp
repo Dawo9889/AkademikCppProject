@@ -23,6 +23,7 @@ int User::createTableUser() {
 		"username VARCHAR(20) NOT NULL,"
 		"password_hash VARCHAR(250) NOT NULL,"
 		"password_salt Varchar(100) NOT NULL,"
+		"email Varchar(100) NOT NULL,"
 		"role TEXT NOT NULL,"
 		"CHECK(role IN('admin', 'user'))"
 		");";
@@ -55,7 +56,7 @@ int User::addUser(string& username, string& email, string& password)
     }
 
     // Adding new user
-    string insertSQL = "INSERT INTO " + tableName + " (username, password_hash, password_salt, role) VALUES (?, ?, ?, ?)";
+    string insertSQL = "INSERT INTO " + tableName + " (username, password_hash, password_salt, email, role) VALUES (?, ?, ?, ?, ?)";
     result = sqlite3_prepare_v2(db, insertSQL.c_str(), -1, &stmt, nullptr);
     if (result != SQLITE_OK) {
         cout << "Application Error: " << sqlite3_errmsg(db) << endl;
@@ -90,7 +91,14 @@ int User::addUser(string& username, string& email, string& password)
         sqlite3_close(db);
         return result;
     }
-    result = sqlite3_bind_text(stmt, 4, role.c_str(), -1, SQLITE_STATIC);
+    result = sqlite3_bind_text(stmt, 4, email.c_str(), -1, SQLITE_STATIC);
+    if (result != SQLITE_OK) {
+        cout << "Application Error: " << sqlite3_errmsg(db) << endl;
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return result;
+    }
+    result = sqlite3_bind_text(stmt, 5, role.c_str(), -1, SQLITE_STATIC);
     if (result != SQLITE_OK) {
         cout << "Application Error: " << sqlite3_errmsg(db) << endl;
         sqlite3_finalize(stmt);
