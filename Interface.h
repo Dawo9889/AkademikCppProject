@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <string>
 #include <Windows.h>
@@ -8,17 +9,24 @@
 using namespace std;
 class Interface
 {
+
+private:
+	User& user;
+	Room& room;
+	Resident& resident;
 public:
-	void welcomePage(User& user, Room& room, Resident& resident);
+	Interface(User& user, Room& room, Resident& resident);
+	void welcomePage();
 	int pageWhenUCanLoginOrRegisterOrExit();
-	int loginPage(User& user, Room& room, Resident& resident);
-	int registerPage(User& user);
-	int addResident(User& user, Room& room, Resident& resident);
-	int mainMenu(User& user, Room& room, Resident& resident);
-	int administrationPanel(User& user, Room& room, Resident& resident);
-	void logoutPage(User& user, Room& room, Resident& resident);
-	int goodbyePage();
-	int managingResidentsPage(User& user, Room& room, Resident& resident);
-	int managingRoomsPage(User& user, Room& room, Resident& resident);
-	int addRoomInterface(User& user, Room& room, Resident& resident);
+	int loginPage();
+	int registerPage();
+	int addResident();
+	int mainMenu();
+	int administrationPanel();
+	void logoutPage();
+	void goodbyePage();
+	int managingResidentsPage();
+	int managingRoomsPage();
+	int addRoomInterface();
+	int deleteRoomInterface();
 };

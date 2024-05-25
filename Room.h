@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include "sqlite/sqlite3.h"
 #include <string>
@@ -13,5 +14,6 @@ public:
 	int addRoom(string& roomNumber, int& numberOfBeds, bool& is_available);
 	int isRoomInDatabase(string& roomNumber);
 	void displayAllRooms();
+	int deleteRoom(string& roomNumber);
 };
 

@@ -27,12 +27,8 @@ int main(int argc, char** argv)
     string passowrd = "hubert";
     user.addUser(username, mail, passowrd);*/
 
-    Interface i1;
-    i1.welcomePage(user, room, resident);
-
-
-
-
+    Interface i1(user, room, resident);
+    i1.welcomePage();
 	return 0;
     
 }
