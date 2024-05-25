@@ -16,5 +16,6 @@ public:
 	bool isResidentInDatabase(string& PESEL);
 	bool isAnyResidentInRoom(string& roomNumber);
 	void displayAllResidents();
+	string returnRoomNumber(string& PESEL);
 };
 

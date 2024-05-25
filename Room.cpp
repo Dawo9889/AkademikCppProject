@@ -207,7 +207,7 @@ bool Room::updateRoomAvailability(string& roomNumber)
 		return false;
 	}
 
-	// count resident amounts in that room
+	// Count resident amounts in that room
 	string countSQL = "SELECT COUNT(*) FROM Residents WHERE room_number = ?";
 	result = sqlite3_prepare_v2(db, countSQL.c_str(), -1, &stmt, nullptr);
 	if (result != SQLITE_OK) {
@@ -254,7 +254,7 @@ bool Room::updateRoomAvailability(string& roomNumber)
 		return false;
 	}
 
-	sqlite3_bind_int(stmt, 1, isAvailable);
+	sqlite3_bind_int(stmt, 1, isAvailable ? 1 : 0);
 	sqlite3_bind_text(stmt, 2, roomNumber.c_str(), -1, SQLITE_STATIC);
 
 	result = sqlite3_step(stmt);

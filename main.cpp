@@ -30,6 +30,5 @@ int main(int argc, char** argv)
     Interface i1(user, room, resident);
     i1.welcomePage();
     
-    
 	return 0;
 }

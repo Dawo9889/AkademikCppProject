@@ -247,8 +247,6 @@ void Resident::displayAllResidents()
         return;
     }
 
-    std::string currentRoom = "";
-    bool firstRoom = true;
 
     // Wykonanie zapytania i pobranie wyników
     while ((result = sqlite3_step(stmt)) == SQLITE_ROW) {
@@ -270,4 +268,46 @@ void Resident::displayAllResidents()
     // Zakoñczenie zapytania i zamkniêcie bazy danych
     sqlite3_finalize(stmt);
     sqlite3_close(db);
+}
+string Resident::returnRoomNumber(string& PESEL)
+{
+    if (isResidentInDatabase(PESEL))
+    {
+        sqlite3* db;
+        sqlite3_stmt* stmt;
+        std::string fileName = "Akademik.db";
+        std::string roomNumber = "";
+
+        int result = sqlite3_open(fileName.c_str(), &db);
+        if (result != SQLITE_OK) {
+            std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
+            return "";
+        }
+
+        std::string selectSQL = "SELECT room_number FROM " + this->tableName + " WHERE pesel = ?";
+        result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
+        if (result != SQLITE_OK) {
+            std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_close(db);
+            return "";
+        }
+
+        result = sqlite3_bind_text(stmt, 1, PESEL.c_str(), -1, SQLITE_STATIC);
+        if (result != SQLITE_OK) {
+            std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+            return "";
+        }
+
+        result = sqlite3_step(stmt);
+        if (result == SQLITE_ROW) {
+            roomNumber = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        }
+
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+
+        return roomNumber;
+    }
 }

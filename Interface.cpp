@@ -179,6 +179,7 @@ int Interface::registerPage()
 	}
 }
 int Interface::addResident() {
+	system("cls");
 	string PESEL, firstName, lastName, email;
 	int roomNumber{};
 	while (true) {
@@ -259,6 +260,7 @@ int Interface::deleteResidentInterface()
 {
 	system("cls");
 	string PESEL;
+	string roomNumber;
 	int decision{};
 	//room.displayAllRooms();
 	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
@@ -270,10 +272,12 @@ int Interface::deleteResidentInterface()
 	}
 	if (resident.isResidentInDatabase(PESEL))
 	{
+		roomNumber = resident.returnRoomNumber(PESEL);
 		decision = resident.deleteResident(PESEL);
 		if (decision == 0)
 		{
 			cout << "Pomyslnie usunieto mieszkanca: " << PESEL;
+			room.updateRoomAvailability(roomNumber);
 			Sleep(1000);
 			return 0;
 		}
