@@ -173,25 +173,29 @@ int Interface::registerPage()
 		}
 	}
 }
-int Interface::addResident()
-{
+int Interface::addResident() {
 	string PESEL, firstName, lastName, email;
 	int roomNumber{};
-	while (true)
-	{
+	while (true) {
 		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
 		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
-		cout << "[Wpisz PESEL: ";
-		cin >> PESEL;
-		if (PESEL == "0")
-		{
-			return 0;
+
+		// loop for checking PESEL number
+		while (true) {
+			cout << "Wpisz PESEL: ";
+			cin >> PESEL;
+			if (PESEL == "0") {
+				return 0;
+			}
+			if (PESEL.size() == 11 && all_of(PESEL.begin(), PESEL.end(), ::isdigit)) {
+				break;
+			}
+			else {
+				cout << "PESEL nie jest ciagiem 11 cyfr. Sprobuj ponownie." << endl;
+			}
 		}
-		if (PESEL.size() != 11)
-		{
-			cout << "PESEL nie jest ciagiem 11 cyfr" << endl;
-		}
-		cout << "[Podaj imie mieszkanca: ";
+
+		cout << "Podaj imie mieszkanca: ";
 		cin >> firstName;
 		cout << "Podaj nazwisko mieszkanca: ";
 		cin >> lastName;
@@ -199,21 +203,29 @@ int Interface::addResident()
 		cin >> email;
 		cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";
 		cin >> roomNumber;
+		string roomNumberStr = to_string(roomNumber);
+
 		if (!resident.isResidentInDatabase(PESEL)) {
+			if (!room.isRoomInDatabase(roomNumberStr)) {
+				system("cls");
+				cout << "Pokoj nie istnieje";
+				Sleep(2000);
+				break;
+			}
 			resident.addResident(PESEL, firstName, lastName, email, roomNumber);
-			cout << "Resident added";
+			system("cls");
+			cout << "Mieszkaniec dodany";
 			Sleep(2000);
 			break;
 		}
-		else
-		{
+		else {
+			system("cls");
 			cout << "Mieszkaniec taki juz znajduje sie w naszej bazie danych";
 			Sleep(2000);
 			break;
 		}
-
-		system("cls");
 	}
+	return 1; 
 }
 void Interface::logoutPage()
 {
