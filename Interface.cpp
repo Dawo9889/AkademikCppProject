@@ -189,23 +189,17 @@ int Interface::addResident() {
 	while (true) {
 		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
 		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
-
-		// loop for checking PESEL number
-		while (true) {
-			cout << "Wpisz PESEL: ";
-			cin >> PESEL;
-			if (PESEL == "0") {
-				return 0;
-			}
-			if (PESEL.size() == 11 && all_of(PESEL.begin(), PESEL.end(), ::isdigit)) {
-				break;
-			}
-			else {
-				cout << "PESEL nie jest ciagiem 11 cyfr. Sprobuj ponownie." << endl;
-			}
+		cout << "[Wpisz PESEL: ";
+		cin >> PESEL;
+		if (PESEL == "0")
+		{
+			return 0;
 		}
-
-		cout << "Podaj imie mieszkanca: ";
+		if (PESEL.size() != 11)
+		{
+			cout << "PESEL nie jest ciagiem 11 cyfr" << endl;
+		}
+		cout << "[Podaj imie mieszkanca: ";
 		cin >> firstName;
 		cout << "Podaj nazwisko mieszkanca: ";
 		cin >> lastName;
@@ -235,7 +229,6 @@ int Interface::addResident() {
 			break;
 		}
 	}
-	return 1;
 }
 void Interface::logoutPage()
 {
