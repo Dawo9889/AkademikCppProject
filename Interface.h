@@ -29,4 +29,6 @@ public:
 	int managingRoomsPage();
 	int addRoomInterface();
 	int deleteRoomInterface();
+	int deleteResidentInterface();
+	void displayResidents();
 };
