@@ -24,8 +24,9 @@ public:
 	int mainMenu();
 	int administrationPanel();
 	void logoutPage();
-	int goodbyePage();
+	void goodbyePage();
 	int managingResidentsPage();
 	int managingRoomsPage();
 	int addRoomInterface();
+	int deleteRoomInterface();
 };

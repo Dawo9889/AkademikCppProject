@@ -136,7 +136,31 @@ int Room::isRoomInDatabase(string& room_number)
 	return roomExists;
 
 }
+int Room::deleteRoom(string & roomNumber)
+{
+	sqlite3* db;
+	char* err = nullptr;
 
+	string file_name = "Akademik.db";
+	int result = sqlite3_open(file_name.c_str(), &db);
+	if (result != SQLITE_OK)
+	{
+		cout << "Blad aplikacji: " << sqlite3_errmsg(db) << endl;
+		return result;
+	}
+
+	string deleteSQL = "DELETE FROM Rooms WHERE room_number = " + roomNumber + "; ";
+
+	result = sqlite3_exec(db, deleteSQL.c_str(), nullptr, nullptr, &err);
+	if (result != SQLITE_OK)
+	{
+		cout << "Blad aplikacji : " << err << endl;
+		sqlite3_free(err);
+		return result;
+	}
+	sqlite3_close(db);
+	return 0;
+}
 
 void Room::displayAllRooms() 
 {
@@ -184,11 +208,11 @@ void Room::displayAllRooms()
 			}
 			currentRoom = roomNumber;
 			firstRoom = false;
-
-			std::cout << "Room Number: " << roomNumber << "\n";
-			std::cout << "Number of Beds: " << numberOfBeds << "\n";
-			std::cout << "Is Available: " << (isAvailable ? "Yes" : "No") << "\n";
-			std::cout << "Residents:\n";
+			std::cout << "  --------------------------------------" << std::endl;
+			std::cout << " | Room Number: " << roomNumber << "\n";
+			std::cout << " | Number of Beds: " << numberOfBeds << "\n";
+			std::cout << " | Is Available: " << (isAvailable ? "Yes" : "No") << "\n";
+			std::cout << " | Residents:\n";
 		}
 		
 		if (peselText) {
@@ -196,11 +220,11 @@ void Room::displayAllRooms()
 			std::string lastName = reinterpret_cast<const char*>(lastNameText);
 			std::string email = reinterpret_cast<const char*>(emailText);
 
-			std::cout << "  --- First Name: " << firstName << "\n";
-			std::cout << "  --- Last Name: " << lastName << "\n";
-			std::cout << "  --- Email: " << email << "\n";
-			cout << "--------" << endl;
+			std::cout << " |	First Name: " << firstName << "\n";
+			std::cout << " |	Last Name: " << lastName << "\n";
+			std::cout << " |	Email: " << email << "\n";
 		}
+		std::cout << "  --------------------------------------" << std::endl;
 	}
 
 	// Zakoñczenie zapytania i zamkniêcie bazy danych
