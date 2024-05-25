@@ -12,7 +12,9 @@ public:
 	int createTableResident();
 	Resident(string& name);
 	int addResident(string& PESEL, string& firstName, string& lastName, string& email, int roomNumber);
+	int deleteResident(string& PESEL);
 	bool isResidentInDatabase(string& PESEL);
 	bool isAnyResidentInRoom(string& roomNumber);
+	void displayAllResidents();
 };
 

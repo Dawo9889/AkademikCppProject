@@ -240,20 +240,68 @@ void Interface::goodbyePage()
 	cout << " -------------- " << endl;
 	Sleep(2000);
 }
+int Interface::deleteResidentInterface()
+{
+	system("cls");
+	string PESEL;
+	int decision{};
+	//room.displayAllRooms();
+	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
+	cout << "[Podaj numer PESEL mieszkanca ktorego chcesz usunac: ";
+	cin >> PESEL;
+	if (PESEL == "0")
+	{
+		return 0;
+	}
+	if (resident.isResidentInDatabase(PESEL))
+	{
+		decision = resident.deleteResident(PESEL);
+		if (decision == 0)
+		{
+			cout << "Pomyslnie usunieto mieszkanca: " << PESEL;
+			Sleep(1000);
+			return 0;
+		}
+		else
+		{
+			cout << "BLAD: ";
+			Sleep(1000);
+			return 0;
+		}
+	}
+	else
+	{
+		cout << "Mieszkaniec o podanym numerze PESEL nie istnieje!";
+		Sleep(1000);
+	}
+}
+void Interface::displayResidents()
+{
+	char sign;
+	do
+	{
+		system("cls");
+		resident.displayAllResidents();
+		cout << "[Jezeli chcesz przerwac wpisz 0 + ENTER]" << endl;
+		cout << "Wprowadz opcje: ";
+		cin >> sign;
+	} while (sign != '0');
+}
 int Interface::managingResidentsPage()
 {
 	int decision{};
 	while (true)
 	{
 		system("cls");
-		cout << " ----------------------------------------  " << endl;
-		cout << "|       Zarzadzanie mieszkancami         | " << endl;
-		cout << "|                                        | " << endl;
-		cout << "|> 1 + ENTER: Dodawanie mieszkanca       | " << endl;
-		cout << "|> 2 + ENTER: Usuwanie mieszkanca        | " << endl;
-		cout << "|> 3 + ENTER  Wstecz                     | " << endl;
-		cout << "|                                        | " << endl;
-		cout << " ----------------------------------------  " << endl;
+		cout << " ----------------------------------------------  " << endl;
+		cout << "|       Zarzadzanie mieszkancami               | " << endl;
+		cout << "|                                              | " << endl;
+		cout << "|> 1 + ENTER: Dodawanie mieszkanca             | " << endl;
+		cout << "|> 2 + ENTER: Usuwanie mieszkanca              | " << endl;
+		cout << "|> 3 + ENTER  Wyswietl wszystkich mieszkancow  | " << endl;
+		cout << "|> 4 + ENTER  Wstecz                           | " << endl;
+		cout << "|                                              | " << endl;
+		cout << " ----------------------------------------------  " << endl;
 		cout << "Wybierz opcje: ";
 		cin >> decision;
 
@@ -263,8 +311,13 @@ int Interface::managingResidentsPage()
 		}
 		else if (decision == 2)
 		{
+			deleteResidentInterface();
 		}
 		else if (decision == 3)
+		{
+			displayResidents();
+		}
+		else if (decision == 4)
 		{
 			administrationPanel();
 			return 1;
@@ -278,6 +331,7 @@ int Interface::managingResidentsPage()
 			Sleep(1000);
 		}
 	}
+	return 0;
 }
 int Interface::managingRoomsPage()
 {
@@ -319,6 +373,7 @@ int Interface::managingRoomsPage()
 			Sleep(1000);
 		}
 	}
+	return 0;
 }
 int Interface::addRoomInterface()
 {
@@ -411,10 +466,12 @@ int Interface::administrationPanel()
 		if (decision == 1)
 		{
 			managingResidentsPage();
+			return 0;
 		}
 		else if (decision == 2)
 		{
 			managingRoomsPage();
+			return 0;
 		}
 		else if (decision == 3)
 		{
@@ -425,6 +482,7 @@ int Interface::administrationPanel()
 		{
 			goodbyePage();
 			return 0;
+			break;
 		}
 		else
 		{

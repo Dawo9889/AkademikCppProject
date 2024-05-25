@@ -113,7 +113,31 @@ int Resident::addResident(string& PESEL, string& firstName, string& lastName, st
     sqlite3_close(db);
     return 1; // Success
 }
+int Resident::deleteResident(string& PESEL)
+{
+    sqlite3* db;
+    char* err = nullptr;
 
+    string file_name = "Akademik.db";
+    int result = sqlite3_open(file_name.c_str(), &db);
+    if (result != SQLITE_OK)
+    {
+        cout << "Blad aplikacji: " << sqlite3_errmsg(db) << endl;
+        return result;
+    }
+
+    string deleteSQL = "DELETE FROM Residents WHERE pesel = '" + PESEL + "'; ";
+
+    result = sqlite3_exec(db, deleteSQL.c_str(), nullptr, nullptr, &err);
+    if (result != SQLITE_OK)
+    {
+        cout << "Blad aplikacji : " << err << endl;
+        sqlite3_free(err);
+        return result;
+    }
+    sqlite3_close(db);
+    return 0;
+}
 bool Resident::isResidentInDatabase(string& PESEL) 
 {
     sqlite3* db;
@@ -198,4 +222,52 @@ bool Resident::isAnyResidentInRoom(string& roomNumber)
     {
         return false;
     }
+}
+void Resident::displayAllResidents()
+{
+    sqlite3* db;
+    sqlite3_stmt* stmt;
+    string fileName = "Akademik.db";
+
+    // Otwarcie bazy danych
+    int result = sqlite3_open(fileName.c_str(), &db);
+    if (result != SQLITE_OK) {
+        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    // Przygotowanie zapytania SQL do pobrania wszystkich pokoi i ich zawartoœci oraz mieszkañców
+    std::string selectSQL = "SELECT * FROM Residents;";
+
+    result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
+    if (result != SQLITE_OK) {
+        std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    std::string currentRoom = "";
+    bool firstRoom = true;
+
+    // Wykonanie zapytania i pobranie wyników
+    while ((result = sqlite3_step(stmt)) == SQLITE_ROW) {
+        std::string pesel = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        std::string first_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        std::string last_name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+        std::string email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+        std::string room_number = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+
+        std::cout << "  --------------------------------------" << std::endl;
+        std::cout << " | PESEL: " << pesel << "\n";
+        std::cout << " | Imie: " << first_name << "\n";
+        std::cout << " | Nazwisko: " << last_name << "\n";
+        std::cout << " | email: " << email << "\n";
+        std::cout << " | Nr.pokoju: " << room_number << "\n";
+        std::cout << "  --------------------------------------" << std::endl;
+    }
+
+    // Zakoñczenie zapytania i zamkniêcie bazy danych
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
 }
