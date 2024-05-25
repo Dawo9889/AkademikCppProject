@@ -368,6 +368,8 @@ int Interface::deleteRoomInterface()
 	{
 		return 0;
 	}
+	if (resident.isAnyResidentInRoom(roomNumber))
+	{
 	decision = room.deleteRoom(roomNumber);
 	if (decision == 0)
 	{
@@ -380,6 +382,12 @@ int Interface::deleteRoomInterface()
 		cout << "BLAD: ";
 		Sleep(1000);
 		return 0;
+	}
+	}
+	else
+	{
+		cout << "Pokoj jest zajety!";
+		Sleep(1000);
 	}
 }
 int Interface::administrationPanel()

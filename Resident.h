@@ -13,5 +13,6 @@ public:
 	Resident(string& name);
 	int addResident(string& PESEL, string& firstName, string& lastName, string& email, int roomNumber);
 	bool isResidentInDatabase(string& PESEL);
+	bool isAnyResidentInRoom(string& roomNumber);
 };
 
