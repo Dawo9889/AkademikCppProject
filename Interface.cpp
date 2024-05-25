@@ -222,7 +222,15 @@ int Interface::addResident() {
 				Sleep(2000);
 				break;
 			}
+			if (!room.isRoomAvailable(roomNumberStr)) {
+				system("cls");
+				cout << "Pokoj nie ma juz miejsc";
+				Sleep(2000);
+				break;
+			}
 			resident.addResident(PESEL, firstName, lastName, email, roomNumber);
+			//After adding a resident we updating room availability in this room
+			room.updateRoomAvailability(roomNumberStr);
 			system("cls");
 			cout << "Mieszkaniec dodany";
 			Sleep(2000);
@@ -366,6 +374,7 @@ int Interface::addRoomInterface()
 			cout << "Ilosc w lozek w pokoju to 1,2 lub 3" << endl;
 		}
 	}
+
 }
 int Interface::deleteRoomInterface()
 {

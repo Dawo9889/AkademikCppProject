@@ -162,13 +162,121 @@ int Room::deleteRoom(string & roomNumber)
 	return 0;
 }
 
+bool Room::isRoomAvailable(string& roomNumber)
+{
+	sqlite3* db;
+	sqlite3_stmt* stmt;
+	string fileName = "Akademik.db";
+	int result = sqlite3_open(fileName.c_str(), &db);
+	if (result != SQLITE_OK) {
+		cout << "Application error: " << sqlite3_errmsg(db) << endl;
+		sqlite3_close(db);
+		return false;
+	}
+
+	string selectSQL = "SELECT is_available FROM " + tableName + " WHERE room_number = ?";
+	result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
+	if (result != SQLITE_OK) {
+		cout << "Application error: " << sqlite3_errmsg(db) << endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return false;
+	}
+
+	sqlite3_bind_text(stmt, 1, roomNumber.c_str(), -1, SQLITE_STATIC);
+
+	bool isAvailable = false;
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		isAvailable = sqlite3_column_int(stmt, 0);
+	}
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+	return isAvailable;
+}
+
+bool Room::updateRoomAvailability(string& roomNumber)
+{
+	sqlite3* db;
+	sqlite3_stmt* stmt;
+	string fileName = "Akademik.db";
+	int result = sqlite3_open(fileName.c_str(), &db);
+	if (result != SQLITE_OK) {
+		cout << "Application error: " << sqlite3_errmsg(db) << endl;
+		sqlite3_close(db);
+		return false;
+	}
+
+	// count resident amounts in that room
+	string countSQL = "SELECT COUNT(*) FROM Residents WHERE room_number = ?";
+	result = sqlite3_prepare_v2(db, countSQL.c_str(), -1, &stmt, nullptr);
+	if (result != SQLITE_OK) {
+		cout << "Application error: " << sqlite3_errmsg(db) << endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return false;
+	}
+
+	sqlite3_bind_text(stmt, 1, roomNumber.c_str(), -1, SQLITE_STATIC);
+
+	int numberOfResidents = 0;
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		numberOfResidents = sqlite3_column_int(stmt, 0);
+	}
+	sqlite3_finalize(stmt);
+
+	// Count bed amounts in that room
+	string bedsSQL = "SELECT number_of_beds FROM " + tableName + " WHERE room_number = ?";
+	result = sqlite3_prepare_v2(db, bedsSQL.c_str(), -1, &stmt, nullptr);
+	if (result != SQLITE_OK) {
+		cout << "Application error: " << sqlite3_errmsg(db) << endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return false;
+	}
+
+	sqlite3_bind_text(stmt, 1, roomNumber.c_str(), -1, SQLITE_STATIC);
+
+	int numberOfBeds = 0;
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		numberOfBeds = sqlite3_column_int(stmt, 0);
+	}
+	sqlite3_finalize(stmt);
+
+	// Updating room availability
+	bool isAvailable = (numberOfResidents < numberOfBeds);
+	string updateSQL = "UPDATE " + tableName + " SET is_available = ? WHERE room_number = ?";
+	result = sqlite3_prepare_v2(db, updateSQL.c_str(), -1, &stmt, nullptr);
+	if (result != SQLITE_OK) {
+		cout << "Application error: " << sqlite3_errmsg(db) << endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return false;
+	}
+
+	sqlite3_bind_int(stmt, 1, isAvailable);
+	sqlite3_bind_text(stmt, 2, roomNumber.c_str(), -1, SQLITE_STATIC);
+
+	result = sqlite3_step(stmt);
+	if (result != SQLITE_DONE) {
+		cout << "Application error: " << sqlite3_errmsg(db) << endl;
+		sqlite3_finalize(stmt);
+		sqlite3_close(db);
+		return false;
+	}
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+	return true;
+}
+
 void Room::displayAllRooms() 
 {
 	sqlite3* db;
 	sqlite3_stmt* stmt;
 	string fileName = "Akademik.db";
 
-	// Otwarcie bazy danych
+	
 	int result = sqlite3_open(fileName.c_str(), &db);
 	if (result != SQLITE_OK) {
 		std::cout << "Application error: " << sqlite3_errmsg(db) << std::endl;

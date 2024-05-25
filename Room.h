@@ -15,5 +15,7 @@ public:
 	int isRoomInDatabase(string& roomNumber);
 	void displayAllRooms();
 	int deleteRoom(string& roomNumber);
-};
+	bool isRoomAvailable(string& roomNumber);
+	bool updateRoomAvailability(string& roomNumber);
+};	
 
