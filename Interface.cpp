@@ -281,14 +281,22 @@ int Interface::userPanel(string& login)
 	int decision{};
 	while (true)
 	{
-		system("cls");\
-		cout << "W systemie twoj email: '" + email + "' nie nalezy do zadnego pokoju. Skontaktuj sie z administratorem." << endl;
-		cout << endl;
+		if (!(resident.isResidentInDatabase(email, 1))) {
+			system("cls");
+			cout << "W systemie twoj email: '" + email + "' nie nalezy do zadnego pokoju. Skontaktuj sie z administratorem." << endl;
+			cout << endl;
+		}
+		else {
+			system("cls");
+			cout << "Ponizej znajduja sie wszystkie dane o Twoim pokoju:"<<endl;
+			string roomNumberStr = resident.returnRoomNumber(email, 1);
+			room.displayRoomDetails(roomNumberStr);
+		}
 		
 		cout << " ----------------------------------------  " << endl;
 		cout << "|          Panel uzytkownika             | " << endl;
 		cout << "|                                        | " << endl;
-		cout << "|> 1 + ENTER: Dane Twojego pokoju        | " << endl;
+		cout << "|                                        | " << endl;
 		cout << "|                                        | " << endl;
 		cout << "|> 3 + ENTER  Wylogowanie                | " << endl;
 		cout << "|> 4 + ENTER  Zamknij aplikacje          | " << endl;
@@ -522,7 +530,7 @@ int Interface::deleteResidentInterface()
 	}
 	if (resident.isResidentInDatabase(PESEL, 0))
 	{
-		roomNumber = resident.returnRoomNumber(PESEL);
+		roomNumber = resident.returnRoomNumber(PESEL, 0);
 		decision = resident.deleteResident(PESEL);
 		if (decision == 0)
 		{
@@ -560,7 +568,7 @@ int Interface::updateRoomOfResident()
 	while (true) {
 		if (resident.isResidentInDatabase(PESEL,0))
 		{
-			oldRoomNumber = resident.returnRoomNumber(PESEL);
+			oldRoomNumber = resident.returnRoomNumber(PESEL, 0);
 			cout << "[Podaj numer nowego pokoju: ";
 			cin >> newRoomNumber;
 			if (newRoomNumber == oldRoomNumber)

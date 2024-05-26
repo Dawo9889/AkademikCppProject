@@ -17,5 +17,6 @@ public:
 	int deleteRoom(string& roomNumber);
 	bool isRoomAvailable(string& roomNumber);
 	bool updateRoomAvailability(string& roomNumber);
+	void displayRoomDetails(string& roomNumber);
 };	
 

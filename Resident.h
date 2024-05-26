@@ -13,10 +13,10 @@ public:
 	Resident(string& name);
 	int addResident(string& PESEL, string& firstName, string& lastName, string& email, int roomNumber);
 	int deleteResident(string& PESEL);
-	bool isResidentInDatabase(const string& identifier, bool searchByEmail); //identifier can be pesel or email, it depends on switch searchByEmail
+	bool isResidentInDatabase(const string& identifier, bool searchByPeselEmail); //identifier can be pesel or email, it depends on switch searchByEmail
 	bool isAnyResidentInRoom(string& roomNumber);
 	void displayAllResidents();
-	string returnRoomNumber(string& PESEL);
+	string returnRoomNumber(string& identifier, bool searchByPeselEmail);
 	int changeRoomOfResitent(string& pesel, string& room_number);
 };
 

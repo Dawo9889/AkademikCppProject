@@ -278,10 +278,9 @@ void Resident::displayAllResidents()
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 }
-string Resident::returnRoomNumber(string& PESEL)
+string Resident::returnRoomNumber(string& identifier, bool searchByPeselEmail)
 {
-    if (isResidentInDatabase(PESEL,0))
-    {
+    if (isResidentInDatabase(identifier, searchByPeselEmail)) {
         sqlite3* db;
         sqlite3_stmt* stmt;
         std::string fileName = "Akademik.db";
@@ -292,8 +291,14 @@ string Resident::returnRoomNumber(string& PESEL)
             std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
             return "";
         }
-
-        std::string selectSQL = "SELECT room_number FROM " + this->tableName + " WHERE pesel = ?";
+        std::string selectSQL;
+        if (searchByPeselEmail) {
+            selectSQL = "SELECT room_number FROM " + this->tableName + " WHERE email = ?";
+        }
+        else {
+            selectSQL = "SELECT room_number FROM " + this->tableName + " WHERE pesel = ?";
+        }
+        
         result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
         if (result != SQLITE_OK) {
             std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
@@ -301,7 +306,7 @@ string Resident::returnRoomNumber(string& PESEL)
             return "";
         }
 
-        result = sqlite3_bind_text(stmt, 1, PESEL.c_str(), -1, SQLITE_STATIC);
+        result = sqlite3_bind_text(stmt, 1, identifier.c_str(), -1, SQLITE_STATIC);
         if (result != SQLITE_OK) {
             std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
             sqlite3_finalize(stmt);
@@ -319,6 +324,8 @@ string Resident::returnRoomNumber(string& PESEL)
 
         return roomNumber;
     }
+    return ""; // If resident is not found in the database
+    
 }
 int Resident::changeRoomOfResitent(string& pesel,string& room_number)
 {
