@@ -264,7 +264,10 @@ void Resident::displayAllResidents()
         std::cout << " | Nr.pokoju: " << room_number << "\n";
         std::cout << "  --------------------------------------" << std::endl;
     }
-
+    if (result == 0)
+    {
+        cout << "nic ni ma" << endl;;
+    }
     // Zakoñczenie zapytania i zamkniêcie bazy danych
     sqlite3_finalize(stmt);
     sqlite3_close(db);

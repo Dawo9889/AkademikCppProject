@@ -341,7 +341,19 @@ void Interface::displayResidents()
 	{
 		system("cls");
 		resident.displayAllResidents();
-		cout << "[Jezeli chcesz przerwac wpisz 0 + ENTER]" << endl;
+		cout << "[Jezeli chcesz wyjsc wpisz 0 + ENTER]" << endl;
+		cout << "Wprowadz opcje: ";
+		cin >> sign;
+	} while (sign != '0');
+}
+void Interface::displayRooms()
+{
+	char sign;
+	do
+	{
+		system("cls");
+		room.displayAllRooms();
+		cout << "[Jezeli chcesz wyjsc wpisz 0 + ENTER]" << endl;
 		cout << "Wprowadz opcje: ";
 		cin >> sign;
 	} while (sign != '0');
@@ -398,13 +410,13 @@ int Interface::managingRoomsPage()
 	while (true)
 	{
 		system("cls");
-		room.displayAllRooms();
 		cout << " ----------------------------------------  " << endl;
 		cout << "|          Zarzadzanie pokojami          | " << endl;
 		cout << "|                                        | " << endl;
 		cout << "|> 1 + ENTER: Dodawanie pokojow          | " << endl;
 		cout << "|> 2 + ENTER: Usuwanie pokojow           | " << endl;
-		cout << "|> 3 + ENTER  Wstecz                     | " << endl;
+		cout << "|> 3 + ENTER: Wyswietl wszystkie pokoje  | " << endl;
+		cout << "|> 4 + ENTER  Wstecz                     | " << endl;
 		cout << "|                                        | " << endl;
 		cout << " ----------------------------------------  " << endl;
 		cout << "Wybierz opcje: ";
@@ -419,6 +431,10 @@ int Interface::managingRoomsPage()
 			deleteRoomInterface();
 		}
 		else if (decision == 3)
+		{
+			displayRooms();
+		}
+		else if (decision == 4)
 		{
 			administrationPanel();
 			return 1;
