@@ -55,6 +55,13 @@ bool validatePassword(const string& password) {
 
 	return true;
 }
+bool isValidEmail(const string& email) {
+	if (email.find('@') == string::npos || email.find('.') == string::npos) {
+		cout << "Podaj poprawny adres email. Poprawny adres email zawiera '@' i domene, np '.com' " << std::endl;
+		return false;
+	}
+	return true;
+}
 bool isNumber(const string& str) {
 	if (str.empty()) return false;
 	for (char c : str) {
@@ -106,13 +113,13 @@ int Interface::pageWhenUCanLoginOrRegisterOrExit()
 
 	cout << "														" << endl;
 	cout << "    -------------      -------------      -----------      " << endl;
-	cout << "   |  Logowanie  |    | Rejestracja |    |  Wyjœcie  |      " << endl;
+	cout << "   |  Logowanie  |    | Rejestracja |    |  Wyjscie  |      " << endl;
 	cout << "   |             |    |             |    |           |      " << endl;
 	cout << "   |      1      |    |      2      |    |     3     |      " << endl;
 	cout << "   |             |    |             |    |           |      " << endl;
 	cout << "    -------------      -------------      -----------      " << endl;
 
-	cout << "Podaj opcjê od 1 do 3 co chcesz zrobic: ";
+	cout << "Podaj opcje od 1 do 3 co chcesz zrobic: ";
 	cin >> decision;
 	if (decision == 1 || decision == 2 || decision == 3)
 	{
@@ -182,17 +189,17 @@ int Interface::registerPage()
 			cout << "Login musi miec przynajmniej 5 znakow." << endl;
 			continue;
 		}
-		cout << "[Podaj email: ";
-		cin >> email;
-		if (email == "0") {
-			return 0; // Exit the registration
-		}
 
-		if (email.find('@') == string::npos || email.find('.') == string::npos) { // Simple validation to check if email has '@' and '.' 
-			cout << "Podaj poprawny adres email. Poprawny adres email zawiera '@' i domene, np '.com' " << endl;
-			continue;
+		while (true) {
+			std::cout << "[Podaj email: ";
+			std::cin >> email;
+			if (email == "0") {
+				return 0; // Exit the registration
+			}
+			if (isValidEmail(email)) {
+				break; // Exit the loop if email is valid
+			}
 		}
-
 		while (true) {
 			std::cout << "[Podaj haslo: ";
 			password = getPassword();
@@ -456,8 +463,16 @@ int Interface::addResident() {
 		cin >> firstName;
 		cout << "Podaj nazwisko mieszkanca: ";
 		cin >> lastName;
-		cout << "Podaj adres email mieszkanca: ";
-		cin >> email;
+		while (true) {
+			std::cout << "Podaj adres email mieszkanca: ";
+			std::cin >> email;
+			if (email == "0") {
+				return 0; // Exit the registration
+			}
+			if (isValidEmail(email)) {
+				break; // Exit the loop if email is valid
+			}
+		}
 
 		while (true) {
 			cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";

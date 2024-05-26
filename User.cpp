@@ -123,7 +123,7 @@ int User::addUser(string& username, string& email, string& password)
 string User::generateSalt(size_t length)
 {
     const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const size_t max_index = sizeof(charset) - 1; // Size of charset minus null terminator
+    const size_t max_index = sizeof(charset) - 1; // Size of charset 
 
     string salt;
     salt.reserve(length); // Reserve space for efficiency
