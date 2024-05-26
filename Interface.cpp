@@ -6,6 +6,7 @@
 #include "User.h"
 #include "Room.h"
 #include "Resident.h"
+
 using namespace std;
 Interface::Interface(User& user, Room& room, Resident& resident) : user(user), room(room), resident(resident)
 {
@@ -193,170 +194,55 @@ int Interface::registerPage()
 		}
 	}
 }
-int Interface::addResident() {
-	system("cls");
-	string PESEL, firstName, lastName, email, roomNumberStr;
-	int roomNumber{};
-	char decision{};
-	while (true) {
-		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
-		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
-
-		// loop for checking PESEL number
-		while (true) {
-			cout << "Wpisz PESEL: ";
-			cin >> PESEL;
-			if (PESEL == "0") {
-				return 0;
-			}
-			if (PESEL.size() == 11 && all_of(PESEL.begin(), PESEL.end(), ::isdigit)) {
-				break;
-			}
-			else {
-				cout << "PESEL nie jest ciagiem 11 cyfr. Sprobuj ponownie." << endl;
-				continue;
-			}
-		}
-
-		cout << "Podaj imie mieszkanca: ";
-		cin >> firstName;
-		cout << "Podaj nazwisko mieszkanca: ";
-		cin >> lastName;
-		cout << "Podaj adres email mieszkanca: ";
-		cin >> email;
-
-		while (true) {
-			cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";
-			cin >> roomNumberStr;
-			if (!isNumber(roomNumberStr)) {
-				cout << "Numer pokoju musi byc liczba. Sprobuj ponownie." << endl;
-				continue;
-			}
-			else
-			{
-				roomNumber = stoi(roomNumberStr);
-				break;
-			}
-			 
-
-		}
-		
-		if (!resident.isResidentInDatabase(PESEL)) {
-			if (!room.isRoomInDatabase(roomNumberStr)) {
-				system("cls");
-				cout << "Pokoj nie istnieje"<<endl;
-				cout << "Czy chcesz dodac pokoj teraz [t/n]? ";
-				cin >> decision;
-				if (decision == 'n' || decision == 'N')
-				{
-					break;
-				}
-				else
-				{
-					addRoomInterface();
-				}
-				Sleep(2000);
-			}
-			if (!room.isRoomAvailable(roomNumberStr)) {
-				system("cls");
-				cout << "Pokoj nie ma juz miejsc";
-				Sleep(2000);
-				break;
-			}
-			
-			resident.addResident(PESEL, firstName, lastName, email, roomNumber);
-			//After adding a resident we updating room availability in this room
-			room.updateRoomAvailability(roomNumberStr);
-			system("cls");
-			cout << "Mieszkaniec dodany";
-			Sleep(2000);
-			break;
-		}
-		else {
-			system("cls");
-			cout << "Mieszkaniec taki juz znajduje sie w naszej bazie danych";
-			Sleep(2000);
-			break;
-		}
-	}
-	return 1;
-}
-void Interface::logoutPage()
+int Interface::administrationPanel()
 {
-	system("cls");
-	cout << ">>> Pomyslnie wylogowano z systemu <<<" << endl;
-	Sleep(2000);
-}
-
-void Interface::goodbyePage()
-{
-	system("cls");
-	cout << " -------------- " << endl;
-	cout << "| Do widzenia! |" << endl;
-	cout << " -------------- " << endl;
-	Sleep(2000);
-}
-int Interface::deleteResidentInterface()
-{
-	system("cls");
-	string PESEL;
-	string roomNumber;
 	int decision{};
-	//room.displayAllRooms();
-	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
-	cout << "[Podaj numer PESEL mieszkanca ktorego chcesz usunac: ";
-	cin >> PESEL;
-	if (PESEL == "0")
+	while (true)
 	{
-		return 0;
-	}
-	if (resident.isResidentInDatabase(PESEL))
-	{
-		roomNumber = resident.returnRoomNumber(PESEL);
-		decision = resident.deleteResident(PESEL);
-		if (decision == 0)
+		system("cls");
+		cout << " ----------------------------------------  " << endl;
+		cout << "|          Panel administracyjny         | " << endl;
+		cout << "|                                        | " << endl;
+		cout << "|> 1 + ENTER: Zarzadzanie mieszkancami   | " << endl;
+		cout << "|> 2 + ENTER: Zarzadzanie pokojami       | " << endl;
+		cout << "|> 3 + ENTER  Wylogowanie                | " << endl;
+		cout << "|> 4 + ENTER  Zamknij aplikacje          | " << endl;
+		cout << "|                                        | " << endl;
+		cout << " ----------------------------------------  " << endl;
+		cout << "Wybierz opcje: ";
+		cin >> decision;
+
+		if (decision == 1)
 		{
-			cout << "Pomyslnie usunieto mieszkanca: " << PESEL;
-			room.updateRoomAvailability(roomNumber);
-			Sleep(1000);
+			managingResidentsPage();
 			return 0;
+		}
+		else if (decision == 2)
+		{
+			managingRoomsPage();
+			return 0;
+		}
+		else if (decision == 3)
+		{
+			logoutPage();
+			return 1;
+		}
+		else if (decision == 4)
+		{
+			goodbyePage();
+			return 0;
+			break;
 		}
 		else
 		{
-			cout << "BLAD: ";
+			cin.clear();
+			cin.ignore();
+			system("cls");
+			cout << ">>> Nieprawidlowa decyzja <<<" << endl;
 			Sleep(1000);
-			return 0;
 		}
 	}
-	else
-	{
-		cout << "Mieszkaniec o podanym numerze PESEL nie istnieje!";
-		Sleep(1000);
-	}
-}
-void Interface::displayResidents()
-{
-	char sign;
-	do
-	{
-		system("cls");
-		resident.displayAllResidents();
-		cout << "[Jezeli chcesz wyjsc wpisz 0 + ENTER]" << endl;
-		cout << "Wprowadz opcje: ";
-		cin >> sign;
-	} while (sign != '0');
-}
-void Interface::displayRooms()
-{
-	char sign;
-	do
-	{
-		system("cls");
-		room.displayAllRooms();
-		cout << "[Jezeli chcesz wyjsc wpisz 0 + ENTER]" << endl;
-		cout << "Wprowadz opcje: ";
-		cin >> sign;
-	} while (sign != '0');
+	return 0;
 }
 int Interface::managingResidentsPage()
 {
@@ -450,6 +336,143 @@ int Interface::managingRoomsPage()
 	}
 	return 0;
 }
+int Interface::addResident() {
+	system("cls");
+	string PESEL, firstName, lastName, email, roomNumberStr;
+	int roomNumber{};
+	char decision{};
+	while (true) {
+		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
+		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
+
+		// loop for checking PESEL number
+		while (true) {
+			cout << "Wpisz PESEL: ";
+			cin >> PESEL;
+			if (PESEL == "0") {
+				return 0;
+			}
+			if (PESEL.size() == 11 && all_of(PESEL.begin(), PESEL.end(), ::isdigit)) {
+				break;
+			}
+			else {
+				cout << "PESEL nie jest ciagiem 11 cyfr. Sprobuj ponownie." << endl;
+				continue;
+			}
+		}
+
+		cout << "Podaj imie mieszkanca: ";
+		cin >> firstName;
+		cout << "Podaj nazwisko mieszkanca: ";
+		cin >> lastName;
+		cout << "Podaj adres email mieszkanca: ";
+		cin >> email;
+
+		while (true) {
+			cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";
+			cin >> roomNumberStr;
+			if (!isNumber(roomNumberStr)) {
+				cout << "Numer pokoju musi byc liczba. Sprobuj ponownie." << endl;
+				continue;
+			}
+			else
+			{
+				roomNumber = stoi(roomNumberStr);
+				break;
+			}
+			 
+
+		}
+		
+		if (!resident.isResidentInDatabase(PESEL)) {
+			if (!room.isRoomInDatabase(roomNumberStr)) {
+				system("cls");
+				cout << "Pokoj nie istnieje"<<endl;
+				cout << "Czy chcesz dodac pokoj teraz [t/n]? ";
+				cin >> decision;
+				if (decision == 'n' || decision == 'N')
+				{
+					break;
+				}
+				else
+				{
+					addRoomInterface();
+				}
+				Sleep(2000);
+			}
+			if (!room.isRoomAvailable(roomNumberStr)) {
+				system("cls");
+				cout << "Pokoj nie ma juz miejsc";
+				Sleep(2000);
+				break;
+			}
+			
+			resident.addResident(PESEL, firstName, lastName, email, roomNumber);
+			//After adding a resident we updating room availability in this room
+			room.updateRoomAvailability(roomNumberStr);
+			system("cls");
+			cout << "Mieszkaniec dodany";
+			Sleep(2000);
+			break;
+		}
+		else {
+			system("cls");
+			cout << "Mieszkaniec taki juz znajduje sie w naszej bazie danych";
+			Sleep(2000);
+			break;
+		}
+	}
+	return 1;
+}
+int Interface::deleteResidentInterface()
+{
+	system("cls");
+	string PESEL;
+	string roomNumber;
+	int decision{};
+	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
+	cout << "[Podaj numer PESEL mieszkanca ktorego chcesz usunac: ";
+	cin >> PESEL;
+	if (PESEL == "0")
+	{
+		return 0;
+	}
+	if (resident.isResidentInDatabase(PESEL))
+	{
+		roomNumber = resident.returnRoomNumber(PESEL);
+		decision = resident.deleteResident(PESEL);
+		if (decision == 0)
+		{
+			cout << "Pomyslnie usunieto mieszkanca: " << PESEL;
+			room.updateRoomAvailability(roomNumber);
+			Sleep(1000);
+			return 0;
+		}
+		else
+		{
+			cout << "BLAD: ";
+			Sleep(1000);
+			return 0;
+		}
+	}
+	else
+	{
+		cout << "Mieszkaniec o podanym numerze PESEL nie istnieje!";
+		Sleep(1000);
+	}
+}
+void Interface::displayResidents()
+{
+	char sign;
+	do
+	{
+		system("cls");
+		resident.displayAllResidents();
+		cout << "[Jezeli chcesz wyjsc wpisz 0 + ENTER]" << endl;
+		cout << "Wprowadz opcje: ";
+		cin >> sign;
+	} while (sign != '0');
+}
 int Interface::addRoomInterface() {
     system("cls");
 	string roomNumber, numberOfBedsStr;
@@ -536,53 +559,30 @@ int Interface::deleteRoomInterface()
 		Sleep(1000);
 	}
 }
-int Interface::administrationPanel()
+void Interface::displayRooms()
 {
-	int decision{};
-	while (true)
+	char sign;
+	do
 	{
 		system("cls");
-		cout << " ----------------------------------------  " << endl;
-		cout << "|          Panel administracyjny         | " << endl;
-		cout << "|                                        | " << endl;
-		cout << "|> 1 + ENTER: Zarzadzanie mieszkancami   | " << endl;
-		cout << "|> 2 + ENTER: Zarzadzanie pokojami       | " << endl;
-		cout << "|> 3 + ENTER  Wylogowanie                | " << endl;
-		cout << "|> 4 + ENTER  Zamknij aplikacje          | " << endl;
-		cout << "|                                        | " << endl;
-		cout << " ----------------------------------------  " << endl;
-		cout << "Wybierz opcje: ";
-		cin >> decision;
+		room.displayAllRooms();
+		cout << "[Jezeli chcesz wyjsc wpisz 0 + ENTER]" << endl;
+		cout << "Wprowadz opcje: ";
+		cin >> sign;
+	} while (sign != '0');
+}
+void Interface::logoutPage()
+{
+	system("cls");
+	cout << ">>> Pomyslnie wylogowano z systemu <<<" << endl;
+	Sleep(2000);
+}
 
-		if (decision == 1)
-		{
-			managingResidentsPage();
-			return 0;
-		}
-		else if (decision == 2)
-		{
-			managingRoomsPage();
-			return 0;
-		}
-		else if (decision == 3)
-		{
-			logoutPage();
-			return 1;
-		}
-		else if (decision == 4)
-		{
-			goodbyePage();
-			return 0;
-			break;
-		}
-		else
-		{
-			cin.clear();
-			cin.ignore();
-			system("cls");
-			cout << ">>> Nieprawidlowa decyzja <<<" << endl;
-			Sleep(1000);
-		}
-	}
-	return 0;
+void Interface::goodbyePage()
+{
+	system("cls");
+	cout << " -------------- " << endl;
+	cout << "| Do widzenia! |" << endl;
+	cout << " -------------- " << endl;
+	Sleep(2000);
 }
