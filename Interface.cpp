@@ -32,6 +32,29 @@ string getPassword() {
 	cout << endl;
 	return password;
 }
+bool validatePassword(const string& password) {
+	// validate password length (min 5 chars)
+	if (password.length() < 5) {
+		std::cout << "Haslo musi miec co najmniej 5 znakow." << std::endl;
+		return false;
+	}
+
+	// minimum one special character
+	bool hasSpecialChar = false;
+	for (char ch : password) {
+		if (!std::isalnum(ch)) {
+			hasSpecialChar = true;
+			break;
+		}
+	}
+
+	if (!hasSpecialChar) {
+		std::cout << "Haslo musi zawierac co najmniej jeden znak specjalny." << std::endl;
+		return false;
+	}
+
+	return true;
+}
 bool isNumber(const string& str) {
 	if (str.empty()) return false;
 	for (char c : str) {
@@ -170,16 +193,21 @@ int Interface::registerPage()
 		}
 
 		while (true) {
-			cout << "[Podaj haslo: ";
+			std::cout << "[Podaj haslo: ";
 			password = getPassword();
-			cout << "[Powtorz haslo: ";
+			if (!validatePassword(password)) {
+				/*cout << "Haslo musi miec przynajmniej 5 znakow i znak specjalny";*/
+				continue; // Powtórz pêtlê
+			}
+			std::cout << "[Powtorz haslo: ";
 			passwordConfirm = getPassword();
+
+			
 
 			if (password == passwordConfirm) {
 				decision = user.addUser(login, email, password);
-				if (decision == 0)
-				{
-					cout << "!!! User already exists !!! " << endl << endl;
+				if (decision == 0) {
+					std::cout << "!!! Uzytkownik juz istnieje !!! " << std::endl << std::endl;
 					Sleep(2000);
 					break;
 				}
@@ -189,7 +217,7 @@ int Interface::registerPage()
 				}
 			}
 			else {
-				cout << "Hasla nie pasuja do siebie, podaj ponownie haslo" << endl;
+				std::cout << "Hasla nie pasuja do siebie, podaj ponownie haslo" << std::endl;
 			}
 		}
 	}
