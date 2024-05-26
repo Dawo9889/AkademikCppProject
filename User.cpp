@@ -65,7 +65,7 @@ int User::addUser(string& username, string& email, string& password)
         return result;
     }
 
-    string role = "admin";
+    string role = "user";
     string password_salt = generateSalt(10);
     string password_hash = generateHash(password, password_salt);
 
