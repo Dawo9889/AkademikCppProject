@@ -109,8 +109,10 @@ int Interface::mainMenu()
 int Interface::pageWhenUCanLoginOrRegisterOrExit()
 {
 	int decision{};
+	
+	while (true)
+	{
 	system("cls");
-
 	cout << "														" << endl;
 	cout << "    -------------      -------------      -----------      " << endl;
 	cout << "   |  Logowanie  |    | Rejestracja |    |  Wyjscie  |      " << endl;
@@ -125,14 +127,14 @@ int Interface::pageWhenUCanLoginOrRegisterOrExit()
 	{
 		system("cls");
 		return decision;
+		break;
 	}
 	else
 	{
-		cin.clear();
-		cin.ignore();
+		system("cls");
 		cout << " >>> Nieprawidlowa decyzja <<< " << endl;
 		Sleep(1000);
-		system("cls");
+	}
 	}
 }
 int Interface::loginPage()
