@@ -314,3 +314,28 @@ string Resident::returnRoomNumber(string& PESEL)
         return roomNumber;
     }
 }
+int Resident::changeRoomOfResitent(string& pesel,string& room_number)
+{
+    sqlite3* db;
+    char* err = nullptr;
+
+    string file_name = "Akademik.db";
+    int result = sqlite3_open(file_name.c_str(), &db);
+    if (result != SQLITE_OK)
+    {
+        cout << "Blad aplikacji: " << sqlite3_errmsg(db) << endl;
+        return result;
+    }
+
+    string selectSQL = "UPDATE " + tableName + " SET room_number = '" + room_number + "' WHERE pesel = '" + pesel + "'; ";
+    result = sqlite3_exec(db, selectSQL.c_str(), nullptr, nullptr, &err);
+
+    if (result != SQLITE_OK)
+    {
+        cout << "Blad aplikacji:" << err << endl;
+        sqlite3_free(err);
+        return result;
+    }
+    sqlite3_close(db);
+    return 0;
+}

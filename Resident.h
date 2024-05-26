@@ -17,5 +17,6 @@ public:
 	bool isAnyResidentInRoom(string& roomNumber);
 	void displayAllResidents();
 	string returnRoomNumber(string& PESEL);
+	int changeRoomOfResitent(string& pesel, string& room_number);
 };
 

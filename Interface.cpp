@@ -255,8 +255,9 @@ int Interface::managingResidentsPage()
 		cout << "|                                              | " << endl;
 		cout << "|> 1 + ENTER: Dodawanie mieszkanca             | " << endl;
 		cout << "|> 2 + ENTER: Usuwanie mieszkanca              | " << endl;
-		cout << "|> 3 + ENTER  Wyswietl wszystkich mieszkancow  | " << endl;
-		cout << "|> 4 + ENTER  Wstecz                           | " << endl;
+		cout << "|> 3 + ENTER: Zmiana pokoju mieszkanca         | " << endl;
+		cout << "|> 4 + ENTER  Wyswietl wszystkich mieszkancow  | " << endl;
+		cout << "|> 5 + ENTER  Wstecz                           | " << endl;
 		cout << "|                                              | " << endl;
 		cout << " ----------------------------------------------  " << endl;
 		cout << "Wybierz opcje: ";
@@ -272,9 +273,13 @@ int Interface::managingResidentsPage()
 		}
 		else if (decision == 3)
 		{
-			displayResidents();
+			updateRoomOfResident();
 		}
 		else if (decision == 4)
+		{
+			displayResidents();
+		}
+		else if (decision == 5)
 		{
 			administrationPanel();
 			return 1;
@@ -459,6 +464,77 @@ int Interface::deleteResidentInterface()
 	{
 		cout << "Mieszkaniec o podanym numerze PESEL nie istnieje!";
 		Sleep(1000);
+	}
+}
+int Interface::updateRoomOfResident()
+{
+	system("cls");
+	string PESEL, newRoomNumber, oldRoomNumber;
+	int decision{};
+	char decisionChar{};
+	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
+	cout << "[Podaj numer PESEL mieszkanca ktoremu chcesz zmienic pokoj: ";
+	cin >> PESEL;
+	if (PESEL == "0")
+	{
+		return 0;
+	}
+	while (true) {
+		if (resident.isResidentInDatabase(PESEL))
+		{
+			oldRoomNumber = resident.returnRoomNumber(PESEL);
+			cout << "[Podaj numer nowego pokoju: ";
+			cin >> newRoomNumber;
+			if (newRoomNumber == oldRoomNumber)
+			{
+				cout << "Mieszkaniec znajduje sie obecnie w tym pokoju!";
+				Sleep(2000);
+				break;
+			}
+			if (!room.isRoomInDatabase(newRoomNumber)) {
+				system("cls");
+				cout << "Pokoj nie istnieje" << endl;
+				cout << "Czy chcesz dodac pokoj teraz [t/n]? ";
+				cin >> decisionChar;
+				if (decisionChar == 'n' || decisionChar == 'N')
+				{
+					return 0;
+					break;
+				}
+				else
+				{
+					addRoomInterface();
+				}
+				Sleep(2000);
+			}
+			if (!room.isRoomAvailable(newRoomNumber))
+			{
+				cout << "Pokoj juz jest pelny!";
+				Sleep(2000);
+				break;
+			}
+			decision = resident.changeRoomOfResitent(PESEL,newRoomNumber);
+			if (decision == 0)
+			{
+				cout << "Pomyslnie zmieniono pokoj mieszkanca: " << PESEL;
+				room.updateRoomAvailability(oldRoomNumber);
+				room.updateRoomAvailability(newRoomNumber);
+				Sleep(1000);
+				return 0;
+			}
+			else
+			{
+				cout << "BLAD: ";
+				Sleep(1000);
+				return 0;
+			}
+		}
+		else
+		{
+			cout << "Mieszkaniec o podanym numerze PESEL nie istnieje!";
+			Sleep(1000);
+			break;
+		}
 	}
 }
 void Interface::displayResidents()
