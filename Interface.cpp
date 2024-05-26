@@ -234,6 +234,7 @@ int Interface::addResident() {
 			}
 			else
 			{
+				roomNumber = stoi(roomNumberStr);
 				break;
 			}
 			 
@@ -262,6 +263,7 @@ int Interface::addResident() {
 				Sleep(2000);
 				break;
 			}
+			
 			resident.addResident(PESEL, firstName, lastName, email, roomNumber);
 			//After adding a resident we updating room availability in this room
 			room.updateRoomAvailability(roomNumberStr);
