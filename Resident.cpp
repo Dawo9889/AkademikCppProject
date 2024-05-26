@@ -138,8 +138,7 @@ int Resident::deleteResident(string& PESEL)
     sqlite3_close(db);
     return 0;
 }
-bool Resident::isResidentInDatabase(string& PESEL) 
-{
+bool Resident::isResidentInDatabase(const string& identifier, bool searchByEmail) {
     sqlite3* db;
     sqlite3_stmt* stmt;
     std::string fileName = "Akademik.db";
@@ -150,7 +149,14 @@ bool Resident::isResidentInDatabase(string& PESEL)
         return false;
     }
 
-    std::string selectSQL = "SELECT 1 FROM " + this->tableName + " WHERE pesel = ?";
+    std::string selectSQL;
+    if (searchByEmail) {
+        selectSQL = "SELECT 1 FROM " + this->tableName + " WHERE email = ?";
+    }
+    else {
+        selectSQL = "SELECT 1 FROM " + this->tableName + " WHERE pesel = ?";
+    }
+
     result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
     if (result != SQLITE_OK) {
         std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
@@ -158,7 +164,7 @@ bool Resident::isResidentInDatabase(string& PESEL)
         return false;
     }
 
-    result = sqlite3_bind_text(stmt, 1, PESEL.c_str(), -1, SQLITE_STATIC);
+    result = sqlite3_bind_text(stmt, 1, identifier.c_str(), -1, SQLITE_STATIC);
     if (result != SQLITE_OK) {
         std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
         sqlite3_finalize(stmt);
@@ -274,7 +280,7 @@ void Resident::displayAllResidents()
 }
 string Resident::returnRoomNumber(string& PESEL)
 {
-    if (isResidentInDatabase(PESEL))
+    if (isResidentInDatabase(PESEL,0))
     {
         sqlite3* db;
         sqlite3_stmt* stmt;

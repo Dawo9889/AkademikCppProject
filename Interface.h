@@ -23,6 +23,7 @@ public:
 	int addResident();
 	int mainMenu();
 	int administrationPanel();
+	int userPanel();
 	void logoutPage();
 	void goodbyePage();
 	int managingResidentsPage();

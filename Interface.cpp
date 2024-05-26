@@ -152,7 +152,8 @@ int Interface::loginPage()
 			}
 			else {
 				cout << "User is not an admin";
-				Sleep(3000);
+				Sleep(1000);
+				userPanel();
 			}
 		}
 		else {
@@ -252,6 +253,49 @@ int Interface::administrationPanel()
 		}
 		else if (decision == 3)
 		{
+			logoutPage();
+			return 1;
+		}
+		else if (decision == 4)
+		{
+			goodbyePage();
+			return 0;
+			break;
+		}
+		else
+		{
+			cin.clear();
+			cin.ignore();
+			system("cls");
+			cout << ">>> Nieprawidlowa decyzja <<<" << endl;
+			Sleep(1000);
+		}
+	}
+	return 0;
+}
+int Interface::userPanel()
+{
+	int decision{};
+	while (true)
+	{
+		system("cls");
+		cout << " ----------------------------------------  " << endl;
+		cout << "|          Panel uzytkownika             | " << endl;
+		cout << "|                                        | " << endl;
+		cout << "|> 1 + ENTER: Dane Twojego pokoju        | " << endl;
+		cout << "|                                        | " << endl;
+		cout << "|> 3 + ENTER  Wylogowanie                | " << endl;
+		cout << "|> 4 + ENTER  Zamknij aplikacje          | " << endl;
+		cout << "|                                        | " << endl;
+		cout << " ----------------------------------------  " << endl;
+		cout << "Wybierz opcje: ";
+		cin >> decision;
+
+		if (decision == 1) {
+
+			return 1;
+		}
+		if (decision == 3) {
 			logoutPage();
 			return 1;
 		}
@@ -417,7 +461,7 @@ int Interface::addResident() {
 
 		}
 		
-		if (!resident.isResidentInDatabase(PESEL)) {
+		if (!resident.isResidentInDatabase(PESEL, 0)) { // 0 to tell function that we looking for resident by pesel
 			if (!room.isRoomInDatabase(roomNumberStr)) {
 				system("cls");
 				cout << "Pokoj nie istnieje"<<endl;
@@ -470,7 +514,7 @@ int Interface::deleteResidentInterface()
 	{
 		return 0;
 	}
-	if (resident.isResidentInDatabase(PESEL))
+	if (resident.isResidentInDatabase(PESEL, 0))
 	{
 		roomNumber = resident.returnRoomNumber(PESEL);
 		decision = resident.deleteResident(PESEL);
@@ -508,7 +552,7 @@ int Interface::updateRoomOfResident()
 		return 0;
 	}
 	while (true) {
-		if (resident.isResidentInDatabase(PESEL))
+		if (resident.isResidentInDatabase(PESEL,0))
 		{
 			oldRoomNumber = resident.returnRoomNumber(PESEL);
 			cout << "[Podaj numer nowego pokoju: ";

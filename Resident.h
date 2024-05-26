@@ -13,7 +13,7 @@ public:
 	Resident(string& name);
 	int addResident(string& PESEL, string& firstName, string& lastName, string& email, int roomNumber);
 	int deleteResident(string& PESEL);
-	bool isResidentInDatabase(string& PESEL);
+	bool isResidentInDatabase(const string& identifier, bool searchByEmail); //identifier can be pesel or email, it depends on switch searchByEmail
 	bool isAnyResidentInRoom(string& roomNumber);
 	void displayAllResidents();
 	string returnRoomNumber(string& PESEL);
