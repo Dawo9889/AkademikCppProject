@@ -31,4 +31,5 @@ public:
 	int deleteRoomInterface();
 	int deleteResidentInterface();
 	void displayResidents();
+	void displayRooms();
 };
