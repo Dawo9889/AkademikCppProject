@@ -1,7 +1,8 @@
-#include "Interface.h"
 #include <iomanip>
 #include <string>
 #include <conio.h>
+
+#include "Interface.h"
 #include "User.h"
 #include "Room.h"
 #include "Resident.h"
@@ -29,6 +30,13 @@ string getPassword() {
 	}
 	cout << endl;
 	return password;
+}
+bool isNumber(const string& str) {
+	if (str.empty()) return false;
+	for (char c : str) {
+		if (!isdigit(c)) return false;
+	}
+	return true;
 }
 void Interface::welcomePage()
 {
@@ -145,12 +153,19 @@ int Interface::registerPage()
 		{
 			return 0; // Exit the registration
 		}
-
+		if (login.length() < 5) { // Checking login length
+			cout << "Login musi miec przynajmniej 5 znakow." << endl;
+			continue;
+		}
 		cout << "[Podaj email: ";
 		cin >> email;
-		if (email == "0")
-		{
+		if (email == "0") {
 			return 0; // Exit the registration
+		}
+
+		if (email.find('@') == string::npos || email.find('.') == string::npos) { // Simple validation to check if email has '@' and '.' 
+			cout << "Podaj poprawny adres email. Poprawny adres email zawiera '@' i domene, np '.com' " << endl;
+			continue;
 		}
 
 		while (true) {
@@ -180,7 +195,7 @@ int Interface::registerPage()
 }
 int Interface::addResident() {
 	system("cls");
-	string PESEL, firstName, lastName, email;
+	string PESEL, firstName, lastName, email, roomNumberStr;
 	int roomNumber{};
 	char decision{};
 	while (true) {
@@ -199,6 +214,7 @@ int Interface::addResident() {
 			}
 			else {
 				cout << "PESEL nie jest ciagiem 11 cyfr. Sprobuj ponownie." << endl;
+				continue;
 			}
 		}
 
@@ -208,10 +224,22 @@ int Interface::addResident() {
 		cin >> lastName;
 		cout << "Podaj adres email mieszkanca: ";
 		cin >> email;
-		cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";
-		cin >> roomNumber;
-		string roomNumberStr = to_string(roomNumber);
 
+		while (true) {
+			cout << "Podaj pokoj do ktorego chcesz przydzielic mieszkanca: ";
+			cin >> roomNumberStr;
+			if (!isNumber(roomNumberStr)) {
+				cout << "Numer pokoju musi byc liczba. Sprobuj ponownie." << endl;
+				continue;
+			}
+			else
+			{
+				break;
+			}
+			 
+
+		}
+		
 		if (!resident.isResidentInDatabase(PESEL)) {
 			if (!room.isRoomInDatabase(roomNumberStr)) {
 				system("cls");
@@ -404,41 +432,56 @@ int Interface::managingRoomsPage()
 	}
 	return 0;
 }
-int Interface::addRoomInterface()
-{
-	system("cls");
-	string roomNumber;
-	int decision{}, numberOfBeds{};
-	bool isAvailable = true;
-	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
-	cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
-	cout << "[Podaj numer pokoju: ";
-	cin >> roomNumber;
-	if (roomNumber == "0")
-	{
-		return 0;
-	}
-	while (true) {
-		cout << "[Podaj ilosc lozek w pokoju: ";
-		cin >> numberOfBeds;
-		if (numberOfBeds > 0 and numberOfBeds < 4) {
-			decision = room.addRoom(roomNumber, numberOfBeds, isAvailable);
-			if (decision == 0)
-			{
-				cout << "!!! Pokoj juz istnieje !!! " << endl << endl;
-				Sleep(2000);
-				break;
-			}
-			else
-			{
-				return 1;
-			}
-		}
-		else {
-			cout << "Ilosc w lozek w pokoju to 1,2 lub 3" << endl;
-		}
-	}
+int Interface::addRoomInterface() {
+    system("cls");
+	string roomNumber, numberOfBedsStr;
+    int decision{}, numberOfBeds{};
+    bool isAvailable = true;
 
+    cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
+    cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
+
+    while (true) {
+        cout << "[Podaj numer pokoju: ";
+        cin >> roomNumber;
+        if (roomNumber == "0") {
+            return 0; // Exit the function
+        }
+        if (!isNumber(roomNumber)) {
+            cout << "Numer pokoju musi byc liczba. Sprobuj ponownie." << endl;
+            continue;
+        }
+
+		while (true) {
+			cout << "[Podaj ilosc lozek w pokoju: ";
+			cin >> numberOfBedsStr;
+			if (!isNumber(numberOfBedsStr)) {
+				cout << "Ilosc lozek musi byc liczba. Sprobuj ponownie." << endl;
+				continue;
+			}
+			numberOfBeds = stoi(numberOfBedsStr);
+			if (numberOfBeds > 0 && numberOfBeds < 4) {
+				decision = room.addRoom(roomNumber, numberOfBeds, isAvailable);
+				if (decision == 0) {
+					cout << "!!! Pokoj juz istnieje !!! " << endl << endl;
+					Sleep(2000);
+					break; // Breaks the inner while loop
+				}
+				else {
+					cout << "Pokoj zostal dodany pomyslnie." << endl << endl;
+					Sleep(2000);
+					return 1; // Room added successfully
+				}
+			}
+			else {
+				cout << "Ilosc lozek w pokoju to 1, 2 lub 3" << endl;
+			}
+		}
+        if (decision == 0) {
+            break;
+        }
+    }
+    return 0;
 }
 int Interface::deleteRoomInterface()
 {
