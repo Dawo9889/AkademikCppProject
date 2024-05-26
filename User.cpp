@@ -223,6 +223,49 @@ User::UserCredentials User::getUserCredentials(string& username)
     return userCredentials;
 }
 
+string User::getEmailByLogin(const string& login)
+{
+    sqlite3* db;
+    sqlite3_stmt* stmt;
+    string fileName = "Akademik.db";
+    string email;
+
+    int result = sqlite3_open(fileName.c_str(), &db);
+    if (result != SQLITE_OK) {
+        cout << "Blad aplikacji: " << sqlite3_errmsg(db) << endl;
+        return "";
+    }
+
+    string selectSQL = "SELECT email FROM " + this->tableName + " WHERE username = ?";
+    result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
+    if (result != SQLITE_OK) {
+        cout << "Blad aplikacji: " << sqlite3_errmsg(db) << endl;
+        sqlite3_close(db);
+        return "";
+    }
+
+    result = sqlite3_bind_text(stmt, 1, login.c_str(), -1, SQLITE_STATIC);
+    if (result != SQLITE_OK) {
+        cout << "Blad aplikacji: " << sqlite3_errmsg(db) << endl;
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return "";
+    }
+
+    result = sqlite3_step(stmt);
+    if (result == SQLITE_ROW) {
+        email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+    }
+    else {
+        cout << "Nie znaleziono uzytkownika o podanym loginie." << endl;
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return email;
+}
+
 int User::isUserInDatabase(string& username)
 {
 	sqlite3* db;

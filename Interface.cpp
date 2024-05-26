@@ -153,7 +153,7 @@ int Interface::loginPage()
 			else {
 				cout << "User is not an admin";
 				Sleep(1000);
-				userPanel();
+				userPanel(login);
 			}
 		}
 		else {
@@ -273,12 +273,18 @@ int Interface::administrationPanel()
 	}
 	return 0;
 }
-int Interface::userPanel()
+int Interface::userPanel(string& login)
 {
+	string email = user.getEmailByLogin(login);
+	resident.isResidentInDatabase(email, 1);
+	
 	int decision{};
 	while (true)
 	{
-		system("cls");
+		system("cls");\
+		cout << "W systemie twoj email: '" + email + "' nie nalezy do zadnego pokoju. Skontaktuj sie z administratorem." << endl;
+		cout << endl;
+		
 		cout << " ----------------------------------------  " << endl;
 		cout << "|          Panel uzytkownika             | " << endl;
 		cout << "|                                        | " << endl;

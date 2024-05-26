@@ -26,6 +26,7 @@ public:
 		std::string password_salt;
 	};
 	UserCredentials getUserCredentials(string& username);
+	string getEmailByLogin(const string& login);
 	bool validateCredentials(string& username, string& password);
 	string getUserRole(const std::string& username);
 	
