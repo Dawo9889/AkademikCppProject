@@ -18,7 +18,7 @@ int User::createTableUser() {
 		return result;
 	}
 
-	string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "("
+	string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "(" //stworzenie tabeli jesli nie istnieje
 		"user_id INTEGER PRIMARY KEY,"
 		"username VARCHAR(20) NOT NULL,"
 		"password_hash VARCHAR(250) NOT NULL,"
@@ -55,7 +55,7 @@ int User::addUser(string& username, string& email, string& password)
         return result;
     }
 
-    // Adding new user
+    // tworzenie nowego uzytkownika
     string insertSQL = "INSERT INTO " + tableName + " (username, password_hash, password_salt, email, role) VALUES (?, ?, ?, ?, ?)";
     result = sqlite3_prepare_v2(db, insertSQL.c_str(), -1, &stmt, nullptr);
     if (result != SQLITE_OK) {
@@ -69,7 +69,7 @@ int User::addUser(string& username, string& email, string& password)
     string password_salt = generateSalt(10);
     string password_hash = generateHash(password, password_salt);
 
-    // Setting parameters with data
+    // ustwienie paremetrow zgodnie z kolumnami w tabeli
     result = sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
     if (result != SQLITE_OK) {
         cout << "Application Error: " << sqlite3_errmsg(db) << endl;
@@ -116,27 +116,27 @@ int User::addUser(string& username, string& email, string& password)
 
     sqlite3_finalize(stmt);
     sqlite3_close(db);
-    return 1; // Success
+    return 1; // sukces
 }
 
 
 string User::generateSalt(size_t length)
 {
     const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const size_t max_index = sizeof(charset) - 1; // Size of charset 
+    const size_t max_index = sizeof(charset) - 1; // rozmiar
 
     string salt;
-    salt.reserve(length); // Reserve space for efficiency
+    salt.reserve(length); // rezerwacja miejsca dla wydajnosci
 
-    random_device rd; // Obtain a random number from hardware
-    mt19937 gen(rd()); // Seed the generator
+    random_device rd; // uzyskanie losowej liczby 
+    mt19937 gen(rd()); // generator ziarna
     uniform_int_distribution<> dis(0, max_index - 1); // Define the range
 
     for (size_t i = 0; i < length; ++i) {
-        salt += charset[dis(gen)]; // Append a random character from charset
+        salt += charset[dis(gen)]; // dodanie znaku do 'soli'
     }
 
-    return salt; // Return the generated salt
+    return salt; // zwrocenie soli
 }
 string User::generateHash(const string& password, const string& salt)
 {
@@ -145,10 +145,10 @@ string User::generateHash(const string& password, const string& salt)
 	unsigned long hash = 0;
 
 	for (char c : combined) {
-		hash = hash * 31 + c; //simple hashing function
+		hash = hash * 31 + c; //funkcja haszujaca
 	}
 
-	//confert hash to hex values
+	//konwersja na system heksadecymalny
 	stringstream ss;
 	ss << hex << hash;
 	return ss.str();
@@ -158,13 +158,13 @@ bool User::validateCredentials(string& username, string& password)
 {
     UserCredentials userCredentials = getUserCredentials(username);
     if (userCredentials.username.empty()) {
-        return false; // username not found
+        return false; // uzytkownika nie ma w bazie
     }
 
-    // generate hash based on retrived password from user and salt from database
+    //wygenerowanie hashu na podstawie hasla pobranego od uzytkownika i soli z bazy danych
     string generatedHash = generateHash(password, userCredentials.password_salt);
 
-    // validating generated new hash to existed one in database
+    // walidacja wygenerowanego nowego hasha do istniejacego w bazie danych
     return generatedHash == userCredentials.password_hash;
 }
 
@@ -176,10 +176,10 @@ User::UserCredentials User::getUserCredentials(string& username)
 
     if (isUserInDatabase(username) != 1) {
         cout << "!!! User not found i the database, you should register first !!! " << endl;
-        return userCredentials; // user not found
+        return userCredentials; // uzytkownika nie ma w bazie
     }
     
-    // database open
+    // otwarcie polaczenia z baza
     int result = sqlite3_open(fileName.c_str(), &db);
     if (result != SQLITE_OK) {
         cout << "Application error: " << sqlite3_errmsg(db) << endl;
@@ -279,7 +279,7 @@ int User::isUserInDatabase(string& username)
 		return result;
 	}
 
-	//Checking if user already exists
+	//sprawdzanie czy uzytkownik istenieje
 	string selectSQL = "SELECT username FROM " + tableName + " Where username = ?";
 	result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
 	if (result != SQLITE_OK)
@@ -289,7 +289,7 @@ int User::isUserInDatabase(string& username)
 		return result;
 	}
 
-	// Setting param with username
+	// ustwienie parametrow
 	result = sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
 	if (result != SQLITE_OK)
 	{
@@ -299,7 +299,7 @@ int User::isUserInDatabase(string& username)
 		return result;
 	}
 
-	// Execution of the request
+	// zwrocenie wyniku
 	result = sqlite3_step(stmt);
 	int userExists = (result == SQLITE_ROW) ? 1 : 0;
 
@@ -315,7 +315,7 @@ string User::getUserRole(const string& username) {
     sqlite3_stmt* stmt;
     string role;
     string fileName = "Akademik.db";
-    // open cdatabase
+    // otwarcie polaczenia z baza
     int result = sqlite3_open(fileName.c_str(), &db);
     if (result != SQLITE_OK) {
         cout << "Application error: " << sqlite3_errmsg(db) << endl;
@@ -323,7 +323,7 @@ string User::getUserRole(const string& username) {
         return role;
     }
 
-    // prepare sql query
+    // prztygotowanie zapytania
     string selectSQL = "SELECT role FROM " + tableName + " WHERE username = ?";
     result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
     if (result != SQLITE_OK) {
@@ -331,8 +331,7 @@ string User::getUserRole(const string& username) {
         sqlite3_close(db);
         return role;
     }
-
-    // Setting up param with username
+    
     result = sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
     if (result != SQLITE_OK) {
         cout << "Application error: " << sqlite3_errmsg(db) << endl;
@@ -341,7 +340,7 @@ string User::getUserRole(const string& username) {
         return role;
     }
 
-    // Execute an query
+    // wykonanie zapytania
     result = sqlite3_step(stmt);
     if (result == SQLITE_ROW) {
         role = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
@@ -350,7 +349,7 @@ string User::getUserRole(const string& username) {
         cout << "Application error: " << sqlite3_errmsg(db) << endl;
     }
 
-    // db connection close
+    // zamkniecie polaczenia
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 

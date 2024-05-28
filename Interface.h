@@ -17,12 +17,10 @@ private:
 	
 public:
 	Interface(User& user, Room& room, Resident& resident);
-	void welcomePage();
 	int pageWhenUCanLoginOrRegisterOrExit();
 	int loginPage();
 	int registerPage();
 	int addResident();
-	
 	int mainMenu();
 	int administrationPanel();
 	int userPanel(string &login);

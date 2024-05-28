@@ -14,21 +14,16 @@ int main(int argc, char** argv)
     string tableNameUsers = "Users";
 
     Room room(tableNameRooms);
-    room.createTableRoom();
+    room.createTableRoom(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
     Resident resident(tableNameResident);
     resident.createTableResident(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
     User user(tableNameUsers);
-    user.createTableUser();
+    user.createTableUser(); // Stworzenie tabeli przy uruchomieniu programu. Jezeli juz istnieje to lepiej zakomentowac
 
- /*   string username = "hubert";
-    string mail = "chuj@gmail.com";
-    string passowrd = "hubert";
-    user.addUser(username, mail, passowrd);*/
-
-    Interface i1(user, room, resident);
-    i1.welcomePage();
+    Interface i1(user, room, resident); //konstruktor interfejsu
+    i1.mainMenu();
     
 	return 0;
 }

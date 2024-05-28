@@ -18,7 +18,7 @@ int Resident::createTableResident()
 		return result;
 	}
 
-	string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "("
+	string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "(" //stworzenie tabeli w bazie jesli nie istnieje
 		"pesel VARCHAR(11) PRIMARY KEY,"
 		"first_name VARCHAR(30) NOT NULL,"
 		"last_name VARCHAR(30) NOT NULL,"
@@ -125,7 +125,7 @@ int Resident::deleteResident(string& PESEL)
         cout << "Blad aplikacji: " << sqlite3_errmsg(db) << endl;
         return result;
     }
-
+    //przygotowanie zapytania
     string deleteSQL = "DELETE FROM Residents WHERE pesel = '" + PESEL + "'; ";
 
     result = sqlite3_exec(db, deleteSQL.c_str(), nullptr, nullptr, &err);
@@ -138,6 +138,7 @@ int Resident::deleteResident(string& PESEL)
     sqlite3_close(db);
     return 0;
 }
+//sprawdzenie czy mieszkaniec jest w bazie
 bool Resident::isResidentInDatabase(const string& identifier, bool searchByEmail) {
     sqlite3* db;
     sqlite3_stmt* stmt;
@@ -148,7 +149,7 @@ bool Resident::isResidentInDatabase(const string& identifier, bool searchByEmail
         std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
         return false;
     }
-
+    //wyszukujemy w zaleznosci od zmiennej searchByEmail czy szukamy po mailu czy peselu
     std::string selectSQL;
     if (searchByEmail) {
         selectSQL = "SELECT 1 FROM " + this->tableName + " WHERE email = ?";
@@ -180,18 +181,19 @@ bool Resident::isResidentInDatabase(const string& identifier, bool searchByEmail
 
     return exists;
 }
-bool Resident::isAnyResidentInRoom(string& roomNumber)
+bool Resident::isAnyResidentInRoom(string& roomNumber) //sprawdzenie czy mieszkaniec jest w danym pokoju
 {
     sqlite3* db;
     sqlite3_stmt* stmt;
     std::string fileName = "Akademik.db";
 
+    // Otwarcie bazy danych
     int result = sqlite3_open(fileName.c_str(), &db);
     if (result != SQLITE_OK) {
         std::cout << "Blad aplikacji: " << sqlite3_errmsg(db) << std::endl;
         return false;
     }
-
+    // Przygotowanie zapytania SQL do pobrania liczby mieszkancow w danym pokoju
     std::string selectSQL = "SELECT COUNT(*) FROM " + this->tableName + " WHERE room_number = ?";
     result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
     if (result != SQLITE_OK) {
@@ -278,7 +280,7 @@ void Resident::displayAllResidents()
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 }
-string Resident::returnRoomNumber(string& identifier, bool searchByPeselEmail)
+string Resident::returnRoomNumber(string& identifier, bool searchByPeselEmail) //zwracanie numeru pokoju w ktorym mieszkaniec sie znajduje
 {
     if (isResidentInDatabase(identifier, searchByPeselEmail)) {
         sqlite3* db;
@@ -324,10 +326,10 @@ string Resident::returnRoomNumber(string& identifier, bool searchByPeselEmail)
 
         return roomNumber;
     }
-    return ""; // If resident is not found in the database
+    return "";
     
 }
-int Resident::changeRoomOfResitent(string& pesel,string& room_number)
+int Resident::changeRoomOfResitent(string& pesel,string& room_number) // aktualizacja pokoju w ktorym mieszkaniec sie znajduje
 {
     sqlite3* db;
     char* err = nullptr;

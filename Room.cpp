@@ -15,7 +15,7 @@ int Room::createTableRoom(){
 		return result;
 	}
 
-	string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "("
+	string createTableSQL = "CREATE TABLE IF NOT EXISTS " + this->tableName + "(" //tworzenie tabeli
 		"room_number VARCHAR(4) PRIMARY KEY,"
 		"number_of_beds TINYINT NOT NULL,"
 		"is_available BOOL NOT NULL"
@@ -106,7 +106,7 @@ int Room::isRoomInDatabase(string& room_number)
 		return result;
 	}
 
-	//Checking if user already exists
+	//sprawdzanie czy pokoj istnieje
 	string selectSQL = "SELECT room_number FROM " + tableName + " Where room_number = ?";
 	result = sqlite3_prepare_v2(db, selectSQL.c_str(), -1, &stmt, nullptr);
 	if (result != SQLITE_OK)
@@ -116,17 +116,17 @@ int Room::isRoomInDatabase(string& room_number)
 		return result;
 	}
 
-	// Setting param with username
+	// ustawienie parametru numeru pokoju
 	result = sqlite3_bind_text(stmt, 1, room_number.c_str(), -1, SQLITE_STATIC);
 	if (result != SQLITE_OK)
 	{
-		cout << "application error: " << sqlite3_errmsg(db) << endl;
+		cout << "Application error: " << sqlite3_errmsg(db) << endl;
 		sqlite3_finalize(stmt);
 		sqlite3_close(db);
 		return result;
 	}
 
-	// Execution of the request
+	// zwrocenie wyniku
 	result = sqlite3_step(stmt);
 	int roomExists = (result == SQLITE_ROW) ? 1 : 0;
 
@@ -151,6 +151,7 @@ int Room::deleteRoom(string & roomNumber)
 
 	string deleteSQL = "DELETE FROM Rooms WHERE room_number = " + roomNumber + "; ";
 
+	//wykonanie zapytania usuwania
 	result = sqlite3_exec(db, deleteSQL.c_str(), nullptr, nullptr, &err);
 	if (result != SQLITE_OK)
 	{
@@ -207,7 +208,7 @@ bool Room::updateRoomAvailability(string& roomNumber)
 		return false;
 	}
 
-	// Count resident amounts in that room
+	// liczba mieszkancow w danym pokoju
 	string countSQL = "SELECT COUNT(*) FROM Residents WHERE room_number = ?";
 	result = sqlite3_prepare_v2(db, countSQL.c_str(), -1, &stmt, nullptr);
 	if (result != SQLITE_OK) {
@@ -225,7 +226,7 @@ bool Room::updateRoomAvailability(string& roomNumber)
 	}
 	sqlite3_finalize(stmt);
 
-	// Count bed amounts in that room
+	// zliczenie lozek w danym pokoju
 	string bedsSQL = "SELECT number_of_beds FROM " + tableName + " WHERE room_number = ?";
 	result = sqlite3_prepare_v2(db, bedsSQL.c_str(), -1, &stmt, nullptr);
 	if (result != SQLITE_OK) {
@@ -243,7 +244,7 @@ bool Room::updateRoomAvailability(string& roomNumber)
 	}
 	sqlite3_finalize(stmt);
 
-	// Updating room availability
+	// aktualizacja dostepnosci pokoju
 	bool isAvailable = (numberOfResidents < numberOfBeds);
 	string updateSQL = "UPDATE " + tableName + " SET is_available = ? WHERE room_number = ?";
 	result = sqlite3_prepare_v2(db, updateSQL.c_str(), -1, &stmt, nullptr);

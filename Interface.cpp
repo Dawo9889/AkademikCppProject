@@ -8,13 +8,13 @@
 #include "Resident.h"
 
 using namespace std;
-Interface::Interface(User& user, Room& room, Resident& resident) : user(user), room(room), resident(resident)
+Interface::Interface(User& user, Room& room, Resident& resident) : user(user), room(room), resident(resident) //konstruktor parametryczny klasy Interface
 {
 	this->user = user;
 	this->room = room;
 	this->resident = resident;
 }
-string getPassword() {
+string getPassword() { //funkcja ktora zamienia wprowadzane litery w hasle na znak spacji
 	string password;
 	char ch;
 	while ((ch = _getch()) != '\r') {
@@ -33,13 +33,13 @@ string getPassword() {
 	return password;
 }
 bool validatePassword(const string& password) {
-	// validate password length (min 5 chars)
+	// walidacja dlugosci hasla (min 5 znakow)
 	if (password.length() < 5) {
 		std::cout << "Haslo musi miec co najmniej 5 znakow." << std::endl;
 		return false;
 	}
 
-	// minimum one special character
+	// sprawdzanie czy haslo ma znak specjalny
 	bool hasSpecialChar = false;
 	for (char ch : password) {
 		if (!std::isalnum(ch)) {
@@ -55,7 +55,9 @@ bool validatePassword(const string& password) {
 
 	return true;
 }
-bool isValidEmail(const string& email) {
+bool isValidEmail(const string& email) 
+//walidacja adresu email
+{  
 	if (email.find('@') == string::npos || email.find('.') == string::npos) {
 		cout << "Podaj poprawny adres email. Poprawny adres email zawiera '@' i domene, np '.com' " << std::endl;
 		return false;
@@ -68,12 +70,6 @@ bool isNumber(const string& str) {
 		if (!isdigit(c)) return false;
 	}
 	return true;
-}
-void Interface::welcomePage()
-{
-	/*cout << "Witaj";
-	Sleep(3000);*/
-	mainMenu();
 }
 int Interface::mainMenu()
 {
@@ -113,6 +109,7 @@ int Interface::pageWhenUCanLoginOrRegisterOrExit()
 	while (true)
 	{
 	system("cls");
+	cout << "	         	   AKADEMIK                		" << endl;
 	cout << "														" << endl;
 	cout << "    -------------      -------------      -----------      " << endl;
 	cout << "   |  Logowanie  |    | Rejestracja |    |  Wyjscie  |      " << endl;
@@ -153,14 +150,14 @@ int Interface::loginPage()
 			return -1;
 		}
 		cout << "[Wpisz haslo: ";
-		password = getPassword();
-		if (user.validateCredentials(login, password)) {
-			if (user.getUserRole(login) == "admin") {
+		password = getPassword(); //pobranie hasla z funkcji ktora ukrywa haslo w konsoli
+		if (user.validateCredentials(login, password)) { //sprawdzanie loginu i has³a
+			if (user.getUserRole(login) == "admin") { //przejscie do panelu administratora jesli uzytkownik jest adminem
 				return administrationPanel();
 				break;
 			}
 			else {
-				cout << "User is not an admin";
+				cout << "Uzytkownik nie jest administratorem"; //a tutaj jest uruchamiany widok uzytkownika
 				Sleep(1000);
 				decision = userPanel(login);
 				if (decision == 0)
@@ -169,7 +166,7 @@ int Interface::loginPage()
 			}
 		}
 		else {
-			cout << "There is no such an user";
+			cout << "Uzytkownik nie istnieje";
 			Sleep(3000);
 		}
 		system("cls");
@@ -188,9 +185,9 @@ int Interface::registerPage()
 		cin >> login;
 		if (login == "0")
 		{
-			return 0; // Exit the registration
+			return 0; // Zakoncz rejestracje
 		}
-		if (login.length() < 5) { // Checking login length
+		if (login.length() < 5) { // Sprawdzanie dlugosci loginu
 			cout << "Login musi miec przynajmniej 5 znakow." << endl;
 			continue;
 		}
@@ -199,17 +196,18 @@ int Interface::registerPage()
 			std::cout << "[Podaj email: ";
 			std::cin >> email;
 			if (email == "0") {
-				return 0; // Exit the registration
+				return 0; //Zakoncz rejestracje
 			}
 			if (isValidEmail(email)) {
-				break; // Exit the loop if email is valid
+				break; // Przerwanie petli jesli email jest poprawny
 			}
 		}
 		while (true) {
 			std::cout << "[Podaj haslo: ";
 			password = getPassword();
 			if (!validatePassword(password)) {
-				/*cout << "Haslo musi miec przynajmniej 5 znakow i znak specjalny";*/
+				cout << "Haslo musi miec przynajmniej 5 znakow i znak specjalny!" << endl;
+				Sleep(2000);
 				continue; // Powtórz pêtlê
 			}
 			std::cout << "[Powtorz haslo: ";
@@ -293,7 +291,7 @@ int Interface::userPanel(string& login)
 	int decision{};
 	while (true)
 	{
-		if (!(resident.isResidentInDatabase(email, 1))) {
+		if (!(resident.isResidentInDatabase(email, 1))) { // sprawdznie czy uzytkownik istnieje w tabeli mieszkancow
 			system("cls");
 			cout << "W systemie twoj email: '" + email + "' nie nalezy do zadnego pokoju. Skontaktuj sie z administratorem." << endl;
 			cout << endl;
@@ -441,9 +439,10 @@ int Interface::addResident() {
 		cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
 		cout << "[Zatwierdzaj dane kilkajac ENTER]" << endl << endl;
 
-		// loop for checking PESEL number
-		while (true) {
-			cout << "Wpisz PESEL: ";
+		while (true) 
+			// walidacja PESEL
+		{
+			cout << "[Podaj numer PESEL mieszkanca ktorego chcesz dodac: ";
 			cin >> PESEL;
 			if (PESEL == "0") {
 				return 0;
@@ -465,10 +464,10 @@ int Interface::addResident() {
 			std::cout << "Podaj adres email mieszkanca: ";
 			std::cin >> email;
 			if (email == "0") {
-				return 0; // Exit the registration
+				return 0; // przerwanie rejestracji
 			}
 			if (isValidEmail(email)) {
-				break; // Exit the loop if email is valid
+				break; // wyjscie z petli w wyniku poprawnego adresu email
 			}
 		}
 
@@ -488,7 +487,7 @@ int Interface::addResident() {
 
 		}
 
-		if (!resident.isResidentInDatabase(PESEL, 0)) { // 0 to tell function that we looking for resident by pesel
+		if (!resident.isResidentInDatabase(PESEL, 0)) { // 0 - jest to argument typu bool, w tej funckji przyjmuje falsz poniewaz szukamy na podstawie PESELu
 			if (!room.isRoomInDatabase(roomNumberStr)) {
 				system("cls");
 				cout << "Pokoj nie istnieje" << endl;
@@ -512,7 +511,7 @@ int Interface::addResident() {
 			}
 
 			resident.addResident(PESEL, firstName, lastName, email, roomNumber);
-			//After adding a resident we updating room availability in this room
+			//po dodaniu mieszkanca aktualizujemy dostepnosc pokoju wzgledem ilosci lozek
 			room.updateRoomAvailability(roomNumberStr);
 			system("cls");
 			cout << "Mieszkaniec dodany";
@@ -535,12 +534,23 @@ int Interface::deleteResidentInterface()
 	string roomNumber;
 	int decision{};
 	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
-	cout << "[Podaj numer PESEL mieszkanca ktorego chcesz usunac: ";
-	cin >> PESEL;
-	if (PESEL == "0")
+	while (true)
+		// walidacja PESEL
 	{
-		return 0;
+		cout << "[Podaj numer PESEL mieszkanca ktorego chcesz usunac: ";
+		cin >> PESEL;
+		if (PESEL == "0") {
+			return 0;
+		}
+		if (PESEL.size() == 11 && all_of(PESEL.begin(), PESEL.end(), ::isdigit)) {
+			break;
+		}
+		else {
+			cout << "PESEL nie jest ciagiem 11 cyfr. Sprobuj ponownie." << endl;
+			continue;
+		}
 	}
+
 	if (resident.isResidentInDatabase(PESEL, 0))
 	{
 		roomNumber = resident.returnRoomNumber(PESEL, 0);
@@ -549,12 +559,6 @@ int Interface::deleteResidentInterface()
 		{
 			cout << "Pomyslnie usunieto mieszkanca: " << PESEL;
 			room.updateRoomAvailability(roomNumber);
-			Sleep(1000);
-			return 0;
-		}
-		else
-		{
-			cout << "BLAD: ";
 			Sleep(1000);
 			return 0;
 		}
@@ -572,25 +576,57 @@ int Interface::updateRoomOfResident()
 	int decision{};
 	char decisionChar{};
 	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
-	cout << "[Podaj numer PESEL mieszkanca ktoremu chcesz zmienic pokoj: ";
-	cin >> PESEL;
-	if (PESEL == "0")
+	while (true)
+		// walidacja PESEL
 	{
-		return 0;
+		cout << "[Podaj numer PESEL mieszkanca ktoremu chcesz zmienic pokoj: ";
+		cin >> PESEL;
+		if (PESEL == "0") {
+			return 0;
+		}
+		if (PESEL.size() == 11 && all_of(PESEL.begin(), PESEL.end(), ::isdigit)) {
+			break;
+		}
+		else {
+			cout << "PESEL nie jest ciagiem 11 cyfr. Sprobuj ponownie." << endl;
+			continue;
+		}
 	}
 	while (true) {
-		if (resident.isResidentInDatabase(PESEL, 0))
+		if (resident.isResidentInDatabase(PESEL, 0)) //sprawdzanie czy mieszkaniec jest w bazie
 		{
-			oldRoomNumber = resident.returnRoomNumber(PESEL, 0);
-			cout << "[Podaj numer nowego pokoju: ";
-			cin >> newRoomNumber;
+			oldRoomNumber = resident.returnRoomNumber(PESEL, 0); //pobranie numeru pokoju w ktorym obecnie znajduje sie mieszkaniec
+			
+			while (true)
+			{
+				cout << "[Podaj numer pokoju na ktory chcesz zmienic: ";
+				cin >> newRoomNumber;
+				if (!isNumber(newRoomNumber)) {
+					cout << "Numer pokoju musi byc liczba. Sprobuj ponownie." << endl;
+					continue;
+				}
+				else if (newRoomNumber == "0")
+				{
+					break;
+					return 0; // przerwanie usuwania pokoju
+				}
+				else
+				{
+					break;
+				}
+			}
+			if (newRoomNumber == "0") //jesli podany pokoj wynosi 0 to rowniez zmiana pokoju jest przerywana
+			{
+				break;
+			}
+
 			if (newRoomNumber == oldRoomNumber)
 			{
 				cout << "Mieszkaniec znajduje sie obecnie w tym pokoju!";
 				Sleep(2000);
 				break;
 			}
-			if (!room.isRoomInDatabase(newRoomNumber)) {
+			if (!room.isRoomInDatabase(newRoomNumber)) { //sprawdzenie czy pokoj istnieje w bazie
 				system("cls");
 				cout << "Pokoj nie istnieje" << endl;
 				cout << "Czy chcesz dodac pokoj teraz [t/n]? ";
@@ -602,28 +638,22 @@ int Interface::updateRoomOfResident()
 				}
 				else
 				{
-					addRoomInterface();
+					addRoomInterface(); //kreator nowego pokoju
 				}
 				Sleep(2000);
 			}
-			if (!room.isRoomAvailable(newRoomNumber))
+			if (!room.isRoomAvailable(newRoomNumber)) //sprawdzenie czy w nowym pokoju jest miejsce
 			{
 				cout << "Pokoj juz jest pelny!";
 				Sleep(2000);
 				break;
 			}
-			decision = resident.changeRoomOfResitent(PESEL, newRoomNumber);
+			decision = resident.changeRoomOfResitent(PESEL, newRoomNumber); //zmiana pokoju
 			if (decision == 0)
 			{
 				cout << "Pomyslnie zmieniono pokoj mieszkanca: " << PESEL;
 				room.updateRoomAvailability(oldRoomNumber);
-				room.updateRoomAvailability(newRoomNumber);
-				Sleep(1000);
-				return 0;
-			}
-			else
-			{
-				cout << "BLAD: ";
+				room.updateRoomAvailability(newRoomNumber); //aktualizacja miejsca w starym i nowym pokoju
 				Sleep(1000);
 				return 0;
 			}
@@ -661,7 +691,7 @@ int Interface::addRoomInterface() {
 		cout << "[Podaj numer pokoju: ";
 		cin >> roomNumber;
 		if (roomNumber == "0") {
-			return 0; // Exit the function
+			return 0; // przerwanie dodawania pokoju
 		}
 		if (!isNumber(roomNumber)) {
 			cout << "Numer pokoju musi byc liczba. Sprobuj ponownie." << endl;
@@ -672,7 +702,7 @@ int Interface::addRoomInterface() {
 			cout << "[Podaj ilosc lozek w pokoju: ";
 			cin >> numberOfBedsStr;
 			if (!isNumber(numberOfBedsStr)) {
-				cout << "Ilosc lozek musi byc liczba. Sprobuj ponownie." << endl;
+				cout << "Ilosc lozek musi byc liczba. Sprobuj ponownie." << endl; //walidacja czy wprowadzone dane sa liczbami
 				continue;
 			}
 			numberOfBeds = stoi(numberOfBedsStr);
@@ -681,12 +711,12 @@ int Interface::addRoomInterface() {
 				if (decision == 0) {
 					cout << "!!! Pokoj juz istnieje !!! " << endl << endl;
 					Sleep(2000);
-					break; // Breaks the inner while loop
+					break; // przerwanie petli poniewaz pokoj juz istnieje
 				}
 				else {
 					cout << "Pokoj zostal dodany pomyslnie." << endl << endl;
 					Sleep(2000);
-					return 1; // Room added successfully
+					return 1;
 				}
 			}
 			else {
@@ -704,15 +734,26 @@ int Interface::deleteRoomInterface()
 	system("cls");
 	string roomNumber;
 	int decision{};
-	room.displayAllRooms();
 	cout << "[Jezeli chcesz przerwac wpisz w pierwszym wierszu 0 + ENTER]" << endl;
-	cout << "[Podaj numer pokoju ktory chcesz usunac: ";
-	cin >> roomNumber;
-	if (roomNumber == "0")
+	while (true) 
 	{
-		return 0;
+		cout << "[Podaj numer pokoju ktory chcesz usunac: ";
+		cin >> roomNumber;
+		if (!isNumber(roomNumber)) {
+			cout << "Numer pokoju musi byc liczba. Sprobuj ponownie." << endl;
+			continue;
+		}
+		else if (roomNumber == "0")
+		{
+			break;
+			return 0; // przerwanie usuwania pokoju
+		}
+		else
+		{
+			break;
+		}
 	}
-	if (resident.isAnyResidentInRoom(roomNumber))
+	if (resident.isAnyResidentInRoom(roomNumber) && roomNumber != "0")
 	{
 		decision = room.deleteRoom(roomNumber);
 		if (decision == 0)
@@ -727,6 +768,9 @@ int Interface::deleteRoomInterface()
 			Sleep(1000);
 			return 0;
 		}
+	}
+	else if (roomNumber == "0")
+	{
 	}
 	else
 	{
