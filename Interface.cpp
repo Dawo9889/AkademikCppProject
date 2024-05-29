@@ -213,8 +213,6 @@ int Interface::registerPage()
 			std::cout << "[Powtorz haslo: ";
 			passwordConfirm = getPassword();
 
-
-
 			if (password == passwordConfirm) {
 				decision = user.addUser(login, email, password);
 				if (decision == 0) {
@@ -314,11 +312,11 @@ int Interface::userPanel(string& login)
 		cin >> decision;
 		if (decision == 1) {
 			logoutPage();
-			return 1;
+			return 1; //wylogowanie sie
 		}
 		else if (decision == 2)
 		{
-			goodbyePage();
+			goodbyePage(); //zamkniecie aplikacji
 			return 0;
 			break;
 		}
@@ -483,7 +481,6 @@ int Interface::addResident() {
 				roomNumber = stoi(roomNumberStr);
 				break;
 			}
-
 
 		}
 

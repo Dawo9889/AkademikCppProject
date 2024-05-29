@@ -175,7 +175,6 @@ User::UserCredentials User::getUserCredentials(string& username)
     string fileName = "Akademik.db";
 
     if (isUserInDatabase(username) != 1) {
-        cout << "!!! User not found i the database, you should register first !!! " << endl;
         return userCredentials; // uzytkownika nie ma w bazie
     }
     
