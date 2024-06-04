@@ -1,7 +1,4 @@
 #include "User.h"
-
-
-
 User::User(string& name) {
 	this->tableName = name;
 }
