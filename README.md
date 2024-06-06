@@ -1,14 +1,14 @@
-# AkademikCppProject
-Ta aplikacja została stworzona w celu zarządzania akademikiem i jego mieszkańcami. Wykorzystuje ona język C++ oraz paradygmat programowania obiektowego, co zapewnia czytelną i łatwą w utrzymaniu strukturę kodu.
+AkademikCppProject
+This application was created to manage a dormitory and its residents. It utilizes C++ and the object-oriented programming paradigm, ensuring a clear and maintainable code structure.
 
-## Funkcjonalności
-Zarządzanie bazą danych: Aplikacja łączy się z lokalną bazą danych SQLite, umożliwiając sprawne przechowywanie i pobieranie informacji.
-CRUD: Podstawowe operacje CRUD (Create, Read, Update, Delete) pozwalają na tworzenie, odczytywanie, aktualizowanie i usuwanie danych dotyczących pokoi, mieszkańców oraz użytkowników.
-Bezpieczeństwo: System uwierzytelniania wykorzystuje hashowanie i solenie haseł, co znacznie zwiększa bezpieczeństwo przechowywanych danych.
-## Role użytkowników:
-### Administrator: Posiada pełne uprawnienia do zarządzania systemem, w tym dodawania, edytowania i usuwania pokoi, mieszkańców oraz użytkowników.
-### Użytkownik: Ma ograniczony dostęp do systemu, może jedynie przeglądać informacje dotyczące swojego pokoju.
-## Technologie
-### Język programowania: C++
-### Paradygmat programowania: Obiektowy
-### Baza danych: SQLite
+Features
+Database Management: The application connects to a local SQLite database, enabling efficient storage and retrieval of information.
+CRUD: Basic CRUD (Create, Read, Update, Delete) operations allow for creating, reading, updating, and deleting data related to rooms, residents, and users.
+Security: The authentication system uses password hashing and salting, significantly increasing the security of stored data.
+User Roles:
+Administrator: Has full permissions to manage the system, including adding, editing, and deleting rooms, residents, and users.
+User: Has limited access to the system, can only view information about their room.
+Technologies
+Programming Language: C++
+Programming Paradigm: Object-Oriented
+Database: SQLite
